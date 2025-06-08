@@ -29,10 +29,13 @@
             color: #333;
             margin-bottom: 15px;
             text-align: center;
+            /* Perbesar ukuran font Absensi Karyawan */
+            font-size: 2.8em; /* Ukuran default untuk desktop/tablet */
         }
         /* Style untuk nama toko (Latucya BRILink Gradasi) */
         .store-name {
-            font-size: 2.2em;
+            /* Perbesar ukuran font Latucya BRILink */
+            font-size: 3em; /* Ukuran default untuk desktop/tablet */
             margin-top: -10px;
             margin-bottom: 25px;
             text-align: center;
@@ -60,27 +63,29 @@
         .absent-button {
             background-color: #007bff; /* Warna biru */
             color: white;
-            padding: 20px 40px;
-            font-size: 2.5em; /* Ukuran font lebih besar */
+            /* Ukuran padding dan font disesuaikan untuk responsif */
+            padding: 15px 30px; /* Padding default */
+            font-size: 2em; /* Ukuran font default */
             font-weight: bold;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: background-color 0.3s ease, transform 0.1s ease;
-            margin-top: 30px; /* Jarak dari elemen di atasnya */
+            margin-top: 30px; 
             margin-bottom: 30px;
-            display: block; /* Agar bisa pakai margin auto */
+            display: block; 
             margin-left: auto;
             margin-right: auto;
-            max-width: 90%; /* Responsif */
+            max-width: 90%; 
+            width: fit-content; /* Sesuaikan lebar dengan konten */
         }
         .absent-button:hover {
-            background-color: #0056b3; /* Lebih gelap saat hover */
-            transform: translateY(-2px); /* Efek sedikit terangkat */
+            background-color: #0056b3; 
+            transform: translateY(-2px); 
         }
         .absent-button:active {
-            transform: translateY(0); /* Kembali ke posisi semula saat diklik */
+            transform: translateY(0); 
         }
         .absent-button:disabled {
             background-color: #cccccc;
@@ -130,18 +135,24 @@
             text-align: center;
         }
         
-        /* Media Queries untuk responsif di layar kecil */
+        /* Media Queries untuk responsif di layar kecil (HP Android) */
         @media (max-width: 600px) {
-            h1 { font-size: 1.8em; }
-            .store-name { font-size: 1.8em; }
-            #currentDateTime { font-size: 1.2em; }
+            h1 { 
+                font-size: 2.2em; /* Font "Absensi Karyawan" di HP */
+            }
+            .store-name { 
+                font-size: 2.5em; /* Font "Latucya BRILink" di HP */
+            }
+            #currentDateTime { 
+                font-size: 1.1em; 
+            }
             .absent-button {
-                padding: 15px 30px;
-                font-size: 2em;
+                padding: 12px 25px; /* Padding tombol di HP, sedikit lebih kecil */
+                font-size: 1.8em; /* Ukuran font tombol di HP */
             }
             #result { font-size: 1em; }
-            .processing-success { font-size: 1.2em !important; }
-            .already-absent { font-size: 1.1em !important; max-width: 95%; }
+            .processing-success { font-size: 1.1em !important; }
+            .already-absent { font-size: 1em !important; max-width: 95%; }
             .footer-text { font-size: 0.7em; }
         }
     </style>
@@ -165,16 +176,12 @@
         const absentButton = document.getElementById('absentButton');
         const resultElement = document.getElementById('result');
 
-        // Fungsi untuk mencatat absensi
         function catatAbsensi() {
-            absentButton.disabled = true; // Nonaktifkan tombol saat memproses
+            absentButton.disabled = true; 
             resultElement.className = 'processing-success';
             resultElement.innerHTML = `Memproses absensi...`;
 
-            // URL WEB APP GOOGLE APPS SCRIPT ANDA (SUDAH DIUPDATE)
             const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbx77aDwjESBSzlBlLnVK53Nxx_9mL9Wr_YgsAHRVviqas7UFqiIiubKpFGjCqjAFunF/exec'; 
-
-            // Untuk 1 karyawan, Anda bisa mengirimkan identifier tetap
             const employeeIdentifier = "Karyawan Utama"; 
             
             fetch(googleAppsScriptURL, {
@@ -203,35 +210,33 @@
                     setTimeout(() => {
                         resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                         resultElement.className = 'info';
-                        absentButton.disabled = false; // Aktifkan kembali tombol
+                        absentButton.disabled = false; 
                     }, 4000); 
                 } else {
-                    resultElement.className = 'error'; // Ubah dari camera-error
+                    resultElement.className = 'error'; 
                     resultElement.innerHTML = `Terjadi kesalahan saat memproses absensi: ${data.message || 'Respons tidak dikenal'}.`;
                     setTimeout(() => {
                         resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                         resultElement.className = 'info';
-                        absentButton.disabled = false; // Aktifkan kembali tombol
+                        absentButton.disabled = false; 
                     }, 4000);
                 }
             })
             .catch(error => {
                 console.error('Error saat mengirim absensi atau memproses respons:', error);
-                resultElement.className = 'error'; // Ubah dari camera-error
+                resultElement.className = 'error'; 
                 resultElement.innerHTML = `Terjadi kesalahan jaringan atau server. Silakan coba lagi.`;
                 
                 setTimeout(() => {
                     resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                     resultElement.className = 'info';
-                    absentButton.disabled = false; // Aktifkan kembali tombol
+                    absentButton.disabled = false; 
                 }, 3000);
             });
         }
 
-        // Event listener untuk tombol "KLIK UNTUK ABSEN"
         absentButton.addEventListener('click', catatAbsensi);
 
-        // Fungsi untuk memperbarui tanggal dan waktu secara real-time
         function updateDateTime() {
             const now = new Date();
             const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -242,14 +247,11 @@
             document.getElementById('currentDateTime').innerHTML = `${dateString} | ${timeString}`;
         }
 
-        // Memanggil fungsi updateDateTime setiap 1 detik
         setInterval(updateDateTime, 1000);
 
-        // Saat halaman web pertama kali dimuat
         window.onload = function() {
             updateDateTime();
-            // Tidak ada inisialisasi kamera lagi, cukup tampilkan tombol
-            absentButton.disabled = false; // Pastikan tombol aktif saat pertama kali dimuat
+            absentButton.disabled = false;
             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
             resultElement.className = 'info';
         };
