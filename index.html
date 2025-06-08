@@ -56,16 +56,38 @@
             text-align: center;
         }
 
-        #reader {
-            width: 500px;
-            max-width: 90%;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
+        /* Style untuk tombol */
+        .absent-button {
+            background-color: #007bff; /* Warna biru */
+            color: white;
+            padding: 20px 40px;
+            font-size: 2.5em; /* Ukuran font lebih besar */
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 30px; /* Jarak dari elemen di atasnya */
+            margin-bottom: 30px;
+            display: block; /* Agar bisa pakai margin auto */
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 90%; /* Responsif */
         }
+        .absent-button:hover {
+            background-color: #0056b3; /* Lebih gelap saat hover */
+            transform: translateY(-2px); /* Efek sedikit terangkat */
+        }
+        .absent-button:active {
+            transform: translateY(0); /* Kembali ke posisi semula saat diklik */
+        }
+        .absent-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         #result {
             margin-top: 15px;
             font-size: 1.2em;
@@ -77,15 +99,6 @@
         .error { color: #dc3545; font-weight: bold; }
         .info { color: #007bff; }
         
-        /* Style untuk pesan error kamera */
-        .camera-error {
-            color: #dc3545 !important;
-            font-size: 1.4em !important;
-            font-weight: bold;
-            text-align: center;
-            padding: 10px;
-        }
-
         /* Style untuk pesan memproses/sukses absensi */
         .processing-success {
             color: #28a745 !important;
@@ -119,12 +132,15 @@
         
         /* Media Queries untuk responsif di layar kecil */
         @media (max-width: 600px) {
-            #reader { max-width: 350px; }
             h1 { font-size: 1.8em; }
             .store-name { font-size: 1.8em; }
             #currentDateTime { font-size: 1.2em; }
+            .absent-button {
+                padding: 15px 30px;
+                font-size: 2em;
+            }
             #result { font-size: 1em; }
-            .camera-error, .processing-success { font-size: 1.2em !important; }
+            .processing-success { font-size: 1.2em !important; }
             .already-absent { font-size: 1.1em !important; max-width: 95%; }
             .footer-text { font-size: 0.7em; }
         }
@@ -132,59 +148,44 @@
 </head>
 <body>
     <h1>Absensi Karyawan</h1>
-    <!-- Nama Toko dengan Gradasi Warna -->
     <div class="store-name gradient-text">
         Latucya BRILink
     </div>
     
-    <!-- Elemen untuk menampilkan tanggal dan waktu berjalan -->
     <div id="currentDateTime"></div>
 
-    <!-- Elemen tempat kamera realtime akan ditampilkan -->
-    <div id="reader"></div>
-    <div id="result" class="info">Arahkan kamera ke QR Code absensi Anda.</div>
+    <button id="absentButton" class="absent-button">KLIK UNTUK ABSEN</button>
+    <div id="result" class="info">Tekan tombol di atas untuk mencatat absensi.</div>
 
-    <!-- Teks "Dikembangkan oleh Muhammad Jodi Marties Seviadi" -->
     <div class="footer-text">
         Dikembangkan oleh Muhammad Jodi Marties Seviadi
     </div>
 
-    <!-- Library untuk QR code scanner -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-
     <script>
-        const html5QrCode = new Html5Qrcode("reader");
+        const absentButton = document.getElementById('absentButton');
         const resultElement = document.getElementById('result');
 
-        // Fungsi onScanSuccess yang dipanggil ketika QR Code berhasil discan
-        function onScanSuccess(decodedText, decodedResult) {
-            // Hentikan scanner sementara saat memproses
-            html5QrCode.stop().then(ignore => {
-                console.log("QR Code scanning stopped.");
-            }).catch(err => {
-                console.warn("Gagal menghentikan scanning.", err);
-            });
-
-            // Untuk 1 karyawan, Anda bisa mengirimkan decodedText apa adanya
-            // atau mengirim string tetap seperti "Karyawan Utama"
-            const employeeIdentifier = decodedText || "Karyawan Utama"; 
-            
+        // Fungsi untuk mencatat absensi
+        function catatAbsensi() {
+            absentButton.disabled = true; // Nonaktifkan tombol saat memproses
             resultElement.className = 'processing-success';
             resultElement.innerHTML = `Memproses absensi...`;
 
-            // *** URL WEB APP GOOGLE APPS SCRIPT ANDA (SUDAH DIUPDATE) ***
+            // URL WEB APP GOOGLE APPS SCRIPT ANDA (SUDAH DIUPDATE)
             const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbx77aDwjESBSzlBlLnVK53Nxx_9mL9Wr_YgsAHRVviqas7UFqiIiubKpFGjCqjAFunF/exec'; 
 
+            // Untuk 1 karyawan, Anda bisa mengirimkan identifier tetap
+            const employeeIdentifier = "Karyawan Utama"; 
+            
             fetch(googleAppsScriptURL, {
                 method: 'POST',
-                mode: 'cors', // Penting agar bisa membaca respons JSON dari Apps Script
+                mode: 'cors', 
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                // Kirim employeeIdentifier ke Apps Script
                 body: `action=absen&qrData=${encodeURIComponent(employeeIdentifier)}`
             })
-            .then(response => response.json()) // Parse respons sebagai JSON
+            .then(response => response.json()) 
             .then(data => {
                 console.log('Respons dari Apps Script:', data);
                 if (data.status === "success") {
@@ -195,66 +196,40 @@
                     const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
                     const formattedAbsenTime = encodeURIComponent(`${dateString}, Pukul ${timeString}`);
                     
-                    // Redirect ke halaman sukses dengan membawa waktu absensi
                     window.location.href = `success.html?time=${formattedAbsenTime}`;
                 } else if (data.status === "already_absent") {
                     resultElement.className = 'already-absent';
-                    // Tampilkan pesan dari Apps Script
                     resultElement.innerHTML = `Absensi gagal: ${data.message}`; 
                     setTimeout(() => {
-                        resultElement.innerHTML = 'Arahkan kamera ke QR Code absensi Anda.';
+                        resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                         resultElement.className = 'info';
-                        startQrCodeScanner(); // Mulai lagi scanner setelah beberapa detik
-                    }, 4000); // Tampilkan pesan lebih lama
+                        absentButton.disabled = false; // Aktifkan kembali tombol
+                    }, 4000); 
                 } else {
-                    // Penanganan error tak terduga dari Apps Script
-                    resultElement.className = 'camera-error';
+                    resultElement.className = 'error'; // Ubah dari camera-error
                     resultElement.innerHTML = `Terjadi kesalahan saat memproses absensi: ${data.message || 'Respons tidak dikenal'}.`;
                     setTimeout(() => {
-                        resultElement.innerHTML = 'Arahkan kamera ke QR Code absensi Anda.';
+                        resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                         resultElement.className = 'info';
-                        startQrCodeScanner();
+                        absentButton.disabled = false; // Aktifkan kembali tombol
                     }, 4000);
                 }
             })
             .catch(error => {
                 console.error('Error saat mengirim absensi atau memproses respons:', error);
-                resultElement.className = 'camera-error';
+                resultElement.className = 'error'; // Ubah dari camera-error
                 resultElement.innerHTML = `Terjadi kesalahan jaringan atau server. Silakan coba lagi.`;
                 
                 setTimeout(() => {
-                    resultElement.innerHTML = 'Arahkan kamera ke QR Code absensi Anda.';
+                    resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                     resultElement.className = 'info';
-                    startQrCodeScanner();
+                    absentButton.disabled = false; // Aktifkan kembali tombol
                 }, 3000);
             });
         }
 
-        // Fungsi yang dipanggil jika scan QR Code gagal
-        function onScanFailure(error) {
-            // console.warn(`QR error = ${error}`); // Bisa diaktifkan untuk debugging
-        }
-
-        // Fungsi untuk memulai QR Code scanner
-        function startQrCodeScanner() {
-            if (html5QrCode.isScanning) {
-                html5QrCode.stop().catch(err => console.warn("Error stopping existing scanner:", err));
-            }
-
-            html5QrCode.start(
-                { facingMode: "environment" }, // Gunakan kamera belakang
-                {
-                    fps: 10, // Frames per second
-                    qrbox: {width: 250, height: 250} // Ukuran area scan QR Code
-                },
-                onScanSuccess,
-                onScanFailure
-            ).catch(err => {
-                console.error("Gagal memulai kamera:", err);
-                resultElement.className = 'camera-error';
-                resultElement.innerHTML = `Gagal memulai kamera. Pastikan Anda memberikan izin akses kamera dan tidak ada aplikasi lain yang menggunakan kamera.`;
-            });
-        }
+        // Event listener untuk tombol "KLIK UNTUK ABSEN"
+        absentButton.addEventListener('click', catatAbsensi);
 
         // Fungsi untuk memperbarui tanggal dan waktu secara real-time
         function updateDateTime() {
@@ -270,10 +245,13 @@
         // Memanggil fungsi updateDateTime setiap 1 detik
         setInterval(updateDateTime, 1000);
 
-        // Memanggil updateDateTime dan startQrCodeScanner saat halaman web pertama kali dimuat
+        // Saat halaman web pertama kali dimuat
         window.onload = function() {
             updateDateTime();
-            startQrCodeScanner(); // Selalu mulai scanner, pengecekan absensi ganda dilakukan di Apps Script
+            // Tidak ada inisialisasi kamera lagi, cukup tampilkan tombol
+            absentButton.disabled = false; // Pastikan tombol aktif saat pertama kali dimuat
+            resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
+            resultElement.className = 'info';
         };
     </script>
 </body>
