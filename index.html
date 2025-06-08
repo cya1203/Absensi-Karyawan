@@ -55,9 +55,9 @@
         }
 
         #currentDateTime {
-            font-size: 1.1em; /* Smaller font size */
+            font-size: 1.1em; /* Ukuran font lebih kecil */
             margin-bottom: 25px;
-            color: #777; /* Grey color */
+            color: #777; /* Warna abu-abu */
             font-weight: bold;
             text-align: center;
         }
@@ -202,8 +202,8 @@
         }
         #locationDetails p.current-time-display { 
             font-weight: bold;
-            font-size: 0.9em; /* Smaller font for current time in details */
-            color: #777; /* Grey color for current time in details */
+            font-size: 0.9em; /* Ukuran font lebih kecil untuk waktu saat ini di detail */
+            color: #777; /* Warna abu-abu untuk waktu saat ini di detail */
             margin-top: 6px; 
         }
         .coordinate-line { 
@@ -236,7 +236,7 @@
                 font-size: 2.5em; 
             }
             #currentDateTime { 
-                font-size: 0.9em; /* Smaller font size for mobile */
+                font-size: 0.9em; /* Ukuran font lebih kecil untuk seluler */
             }
             .absent-button {
                 padding: 12px 25px;
@@ -249,7 +249,7 @@
             .footer-text { font-size: 0.7em; }
             #locationValidationMessage { font-size: 0.9em; }
             
-            /* Penyesuaian detail lokasi untuk mobile */
+            /* Penyesuaian detail lokasi untuk seluler */
             #locationDetails {
                 width: 95%;
                 padding: 8px; 
@@ -264,7 +264,7 @@
                 margin: 2px 0; 
             }
             #locationDetails p.current-time-display { 
-                font-size: 0.85em; /* Smaller font for current time in details mobile */
+                font-size: 0.85em; /* Ukuran font lebih kecil untuk waktu saat ini di detail seluler */
             }
             .coordinate-text {
                 font-size: 0.95em;
@@ -282,14 +282,14 @@
                 background-position: 0 0; 
             }
 
-            /* Welcome screen styles */
+            /* Style untuk layar selamat datang */
             #welcomeScreen {
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: #f4f4f4; /* Match body background */
+                background-color: #f4f4f4; /* Cocok dengan latar belakang body */
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -303,10 +303,12 @@
             #welcomeBox {
                 background-color: white;
                 padding: 30px 20px;
-                border-radius: 0; /* No rounded corners */
+                border-radius: 0; /* Tanpa sudut membulat */
                 box-shadow: 0 0 15px rgba(0,0,0,0.1);
                 max-width: 90%;
                 width: 350px;
+                position: relative; /* Penting untuk watermark di dalamnya */
+                overflow: hidden; /* Untuk memastikan watermark tidak keluar */
             }
 
             #welcomeScreen h2 {
@@ -322,20 +324,51 @@
             }
 
             #welcomeScreen .store-name {
-                font-size: 2.8em; /* Adjusted for welcome screen */
+                font-size: 2.8em; /* Disesuaikan untuk layar selamat datang */
                 margin-top: 10px;
                 margin-bottom: 20px;
             }
 
-            #welcomeScreen #welcomeDateTime, #welcomeCountdown {
-                font-size: 1em; /* Smaller font for welcome screen date/time */
-                color: #777; /* Grey color */
-                margin-bottom: 5px;
+            #welcomeScreen #welcomeDateTime {
+                font-size: 1em; /* Ukuran font lebih kecil untuk tanggal/waktu layar selamat datang */
+                color: #777; /* Warna abu-abu */
+                margin-bottom: 15px; /* Tambah margin bawah */
                 font-weight: normal;
             }
+
+            /* Gaya untuk kotak waktu mundur merah */
             #welcomeCountdown {
-                font-size: 0.9em; /* Even smaller for countdown */
-                margin-top: 10px;
+                background-color: #dc3545; /* Merah seperti notifikasi gagal */
+                color: white;
+                padding: 10px 15px;
+                border-radius: 5px; /* Sedikit membulat agar terlihat seperti notifikasi */
+                font-size: 1.3em; /* Font lebih besar */
+                font-weight: bold;
+                margin-top: 10px; /* Jarak dari elemen di atasnya */
+                display: inline-block; /* Agar padding dan border-radius bekerja */
+            }
+
+            /* Watermark di dalam welcome box */
+            .watermark-overlay-welcome {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-repeat: repeat;
+                background-image: var(--watermark-blue); /* Menggunakan variabel yang sama */
+                background-size: 170px 65px; 
+                background-position: 0 0; 
+                opacity: 0.5; /* Agar tidak terlalu mencolok */
+                z-index: -1; /* Di belakang konten */
+            }
+
+            /* Penyesuaian watermark untuk mobile di dalam welcome box */
+            @media (max-width: 600px) {
+                .watermark-overlay-welcome {
+                    background-image: var(--watermark-blue-mobile);
+                    background-size: 140px 55px; 
+                }
             }
         }
     </style>
@@ -343,14 +376,13 @@
 <body>
     <div id="welcomeScreen">
         <div id="welcomeBox">
-            <h2>Selamat Datang!</h2>
+            <div class="watermark-overlay-welcome"></div> <h2>Selamat Datang!</h2>
             <p>Di Aplikasi Absensi Karyawan</p>
             <div class="store-name">
                 <span class="latucya-text">Latucya</span> <span class="brilink-text">BRILink</span>
             </div>
             <div id="welcomeDateTime"></div>
-            <div id="welcomeCountdown"></div>
-        </div>
+            <div id="welcomeCountdown"></div> </div>
     </div>
 
     <div id="mainContent" style="display: none;">
@@ -718,8 +750,8 @@
         }
 
         window.onload = function() {
-            updateDateTime(); // Set initial time for welcome screen
-            updateCountdown(); // Start the countdown
+            updateDateTime(); // Set waktu awal untuk layar selamat datang
+            updateCountdown(); // Mulai hitung mundur
         };
     </script>
 </body>
