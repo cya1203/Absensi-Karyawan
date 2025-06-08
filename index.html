@@ -106,6 +106,16 @@
         .success { color: #28a745; font-weight: bold; } /* Notifikasi berhasil */
         .error { color: #dc3545; font-weight: bold; }   /* Notifikasi error */
         .info { color: #007bff; }                       /* Notifikasi informasi awal */
+        .warning-yellow { /* Notifikasi kuning untuk kasus lokasi tidak aktif */
+            color: #856404; /* Kuning gelap untuk teks */
+            background-color: #fff3cd; /* Background kuning muda */
+            border: 1px solid #ffeeba; /* Border kuning */
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px auto;
+            max-width: 80%;
+        }
         
         .processing-success {
             color: #28a745 !important; /* Warna hijau untuk proses sukses */
@@ -387,7 +397,7 @@
             displayLng.textContent = toDegreesMinutesAndSeconds(longitude, 'lng');
             
             // Update tautan Google Maps
-            googleMapsLink.href = `http://maps.google.com/maps?q=${latitude},${longitude}`; 
+            googleMapsLink.href = `http://maps.google.com/?q=${latitude},${longitude}`; // Perbaikan URL Google Maps
             googleMapsLink.style.display = 'inline'; 
 
             displayAddress.textContent = 'Mencari lokasi...';
@@ -451,7 +461,6 @@
                             document.getElementById('locationDetails').style.display = 'block';
                             updateLocationDetails(latitude, longitude); 
                             setTimeout(() => {
-                                // Result kembali ke info setelah beberapa detik, namun tombol tetap disabled
                                 resultElement.innerHTML = `Tekan tombol di atas untuk mencatat absensi. Anda terlalu jauh (${distanceText}).`;
                                 resultElement.className = 'info'; // Kembali ke warna info
                             }, 5000); 
@@ -468,18 +477,21 @@
                         switch(error.code) {
                             case error.PERMISSION_DENIED:
                                 errorMessage += "Izin lokasi ditolak. Silakan izinkan lokasi untuk absensi.";
+                                resultElement.className = 'warning-yellow'; // Kuning untuk izin ditolak/lokasi tidak aktif
                                 break;
                             case error.POSITION_UNAVAILABLE:
                                 errorMessage += "Informasi lokasi tidak tersedia.";
+                                resultElement.className = 'warning-yellow'; // Kuning untuk informasi tidak tersedia
                                 break;
                             case error.TIMEOUT:
                                 errorMessage += "Waktu habis untuk mendapatkan lokasi.";
+                                resultElement.className = 'warning-yellow'; // Kuning untuk timeout
                                 break;
                             case error.UNKNOWN_ERROR:
                                 errorMessage += "Terjadi kesalahan tidak dikenal saat mendapatkan lokasi.";
+                                resultElement.className = 'warning-yellow'; // Kuning untuk kesalahan tidak dikenal
                                 break;
                         }
-                        resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah */
                         resultElement.innerHTML = `Absensi gagal: ${errorMessage} Silakan refresh halaman dan coba lagi.`;
                         setTimeout(() => {
                             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
@@ -496,7 +508,7 @@
                     }
                 );
             } else {
-                resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah */
+                resultElement.className = 'warning-yellow'; /* Kuning untuk browser tidak mendukung Geolocation */
                 resultElement.innerHTML = `Absensi gagal: Browser Anda tidak mendukung Geolocation.`;
                 setTimeout(() => {
                     resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
@@ -535,7 +547,7 @@
                     // Alihkan ke success.html jika berhasil
                     window.location.href = `success.html?time=${formattedAbsenTime}&lat=${latitude}&lng=${longitude}&dist=${calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LNG)}`;
                 } else if (data.status === "already_absent") {
-                    resultElement.className = 'already-absent'; /* Diatur merah juga untuk "sudah absen" */
+                    resultElement.className = 'error'; /* Diatur merah untuk "sudah absen" (ini adalah kondisi gagal) */
                     resultElement.innerHTML = `Absensi gagal: ${data.message}`; 
                     setTimeout(() => {
                         resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
@@ -554,7 +566,7 @@
             })
             .catch(error => {
                 console.error('Error saat mengirim absensi atau memproses respons:', error);
-                resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah pada kesalahan jaringan */
+                resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah pada kesalahan jaringan/server */
                 resultElement.innerHTML = `Terjadi kesalahan jaringan atau server. Silakan coba lagi.`;
                 
                 setTimeout(() => {
@@ -601,6 +613,29 @@
                         locationValidationMessage.innerHTML = `Peringatan!! Gagal mendapatkan lokasi. Absensi mungkin tidak valid.`;
                         absentButton.disabled = true;
                         googleMapsLink.style.display = 'none'; 
+
+                        // Menampilkan notifikasi kuning ketika lokasi tidak aktif di awal
+                        resultElement.className = 'warning-yellow'; 
+                        let errorMessage = "Gagal mendapatkan lokasi saat memuat halaman. ";
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage += "Izin lokasi ditolak. Aktifkan lokasi untuk absensi.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage += "Informasi lokasi tidak tersedia.";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage += "Waktu habis untuk mendapatkan lokasi.";
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                errorMessage += "Terjadi kesalahan tidak dikenal saat mendapatkan lokasi.";
+                                break;
+                        }
+                        resultElement.innerHTML = `Penting: ${errorMessage}`;
+                        setTimeout(() => {
+                            resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
+                            resultElement.className = 'info'; 
+                        }, 5000); 
                     },
                     {
                         enableHighAccuracy: true, 
@@ -616,6 +651,14 @@
                 locationValidationMessage.innerHTML = `Peringatan!! Browser Anda tidak mendukung Geolocation. Absensi mungkin tidak valid.`;
                 absentButton.disabled = true;
                 googleMapsLink.style.display = 'none'; 
+
+                // Menampilkan notifikasi kuning ketika browser tidak mendukung Geolocation di awal
+                resultElement.className = 'warning-yellow';
+                resultElement.innerHTML = `Penting: Browser Anda tidak mendukung Geolocation. Absensi tidak dapat dilakukan.`;
+                setTimeout(() => {
+                    resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
+                    resultElement.className = 'info'; 
+                }, 4000);
             }
         };
     </script>
