@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Berhasil!</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+
+            /* Watermark Style */
+            background-repeat: repeat;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='60px' width='150px'><text x='0' y='40' fill='rgba(0, 123, 255, 0.08)' font-family='sans-serif' font-size='16' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+            background-size: 140px 60px;
+        }
+        /* Style untuk nama toko (Latucya BRILink Gradasi) - Pindah ke atas */
+        .store-name {
+            font-size: 2.2em;
+            margin-top: -10px; /* Sesuaikan jika perlu */
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: bold; 
+        }
+        /* Style untuk gradasi teks */
+        .gradient-text {
+            background: linear-gradient(to right, #007bff, orange);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        h1 {
+            color: #28a745; /* Warna hijau untuk sukses */
+            font-size: 2.5em;
+            margin-top: 10px; /* Jarak dari nama toko */
+            margin-bottom: 10px;
+        }
+        #absensiTime {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        p {
+            color: #555;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+        .greeting {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .return-link {
+            margin-top: 40px;
+            font-size: 1.1em;
+        }
+        .return-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .return-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Style untuk footer "Dikembangkan oleh" */
+        .footer-text {
+            margin-top: 50px;
+            font-size: 0.8em;
+            color: #777;
+            text-align: center;
+        }
+
+        /* Media Queries untuk responsif di layar kecil */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            .store-name { font-size: 1.8em; }
+            #absensiTime { font-size: 1em; }
+            p { font-size: 1.2em; }
+            .greeting { font-size: 1.5em; }
+            .return-link { font-size: 0.9em; }
+            .footer-text { font-size: 0.7em; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Nama Toko dengan Gradasi Warna (Dipindahkan ke paling atas) -->
+    <div class="store-name gradient-text">
+        Latucya BRILink
+    </div>
+
+    <h1>Anda Telah Sukses Melakukan Absensi</h1>
+    
+    <div id="absensiTime"></div>
+    <p class="greeting">SELAMAT BEKERJA!!</p>
+    <div class="return-link">
+        <a href="index.html">Klik di sini untuk kembali ke halaman absensi</a>
+    </div>
+
+    <!-- Teks "Dikembangkan oleh Muhammad Jodi Marties Seviadi" -->
+    <div class="footer-text">
+        Dikembangkan oleh Muhammad Jodi Marties Seviadi
+    </div>
+
+    <script>
+        // Fungsi untuk mendapatkan parameter dari URL (untuk mengambil waktu absensi)
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        };
+
+        // Saat halaman dimuat, ambil waktu dari URL dan tampilkan
+        window.onload = function() {
+            var absenTime = getUrlParameter('time');
+            if (absenTime) {
+                document.getElementById('absensiTime').innerHTML = `Pada: ${absenTime}`;
+            } else {
+                document.getElementById('absensiTime').innerHTML = `Waktu absensi tidak diketahui.`;
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Karyawan</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+
+            /* Watermark Style */
+            background-repeat: repeat;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='60px' width='150px'><text x='0' y='40' fill='rgba(0, 123, 255, 0.08)' font-family='sans-serif' font-size='16' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+            background-size: 140px 60px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        /* Style untuk nama toko (Latucya BRILink Gradasi) */
+        .store-name {
+            font-size: 2.2em;
+            margin-top: -10px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: bold;
+        }
+        /* Style untuk gradasi teks */
+        .gradient-text {
+            background: linear-gradient(to right, #007bff, orange);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        /* Style untuk tanggal dan waktu */
+        #currentDateTime {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            color: #555;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #reader {
+            width: 500px;
+            max-width: 90%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+        #result {
+            margin-top: 15px;
+            font-size: 1.2em;
+            color: #555;
+            text-align: center;
+            min-height: 30px;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #007bff; }
+        
+        /* Style untuk pesan error kamera */
+        .camera-error {
+            color: #dc3545 !important;
+            font-size: 1.4em !important;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Style untuk pesan memproses/sukses absensi */
+        .processing-success {
+            color: #28a745 !important;
+            font-size: 1.4em !important;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Style untuk notifikasi sudah absen */
+        .already-absent {
+            color: #ffc107 !important;
+            font-size: 1.3em !important;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ffc107;
+            background-color: #fff3cd;
+            border-radius: 5px;
+            margin: 15px auto;
+            max-width: 80%;
+        }
+
+        /* Style untuk footer "Dikembangkan oleh" */
+        .footer-text {
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #777;
+            text-align: center;
+        }
+        
+        /* Media Queries untuk responsif di layar kecil */
+        @media (max-width: 600px) {
+            #reader { max-width: 350px; }
+            h1 { font-size: 1.8em; }
+            .store-name { font-size: 1.8em; }
+            #currentDateTime { font-size: 1.2em; }
+            #result { font-size: 1em; }
+            .camera-error, .processing-success { font-size: 1.2em !important; }
+            .already-absent { font-size: 1.1em !important; max-width: 95%; }
+            .footer-text { font-size: 0.7em; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Absensi Karyawan</h1>
+    <!-- Nama Toko dengan Gradasi Warna -->
+    <div class="store-name gradient-text">
+        Latucya BRILink
+    </div>
+    
+    <!-- Elemen untuk menampilkan tanggal dan waktu berjalan -->
+    <div id="currentDateTime"></div>
+
+    <!-- Elemen tempat kamera realtime akan ditampilkan -->
+    <div id="reader"></div>
+    <div id="result" class="info">Arahkan kamera ke QR Code absensi Anda.</div>
+
+    <!-- Teks "Dikembangkan oleh Muhammad Jodi Marties Seviadi" -->
+    <div class="footer-text">
+        Dikembangkan oleh Muhammad Jodi Marties Seviadi
+    </div>
+
+    <!-- Library untuk QR code scanner -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <script>
+        const html5QrCode = new Html5Qrcode("reader");
+        const resultElement = document.getElementById('result');
+
+        // Fungsi onScanSuccess yang dipanggil ketika QR Code berhasil discan
+        function onScanSuccess(decodedText, decodedResult) {
+            // Hentikan scanner sementara saat memproses
+            html5QrCode.stop().then(ignore => {
+                console.log("QR Code scanning stopped.");
+            }).catch(err => {
+                console.warn("Gagal menghentikan scanning.", err);
+            });
+
+            // Untuk 1 karyawan, Anda bisa mengirimkan decodedText apa adanya
+            // atau mengirim string tetap seperti "Karyawan Utama"
+            const employeeIdentifier = decodedText || "Karyawan Utama"; 
+            
+            resultElement.className = 'processing-success';
+            resultElement.innerHTML = `Memproses absensi...`;
+
+            // *** URL WEB APP GOOGLE APPS SCRIPT ANDA (SUDAH DIUPDATE) ***
+            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbzcq77_4Q4Mnpf4VkYK-7U4iITSqng610_j7Lb4bLnteDbjvpeIvRQjCUn1pl2uFY6c/exec'; 
+
+            fetch(googleAppsScriptURL, {
+                method: 'POST',
+                mode: 'cors', // Penting agar bisa membaca respons JSON dari Apps Script
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                // Kirim employeeIdentifier ke Apps Script
+                body: `action=absen&qrData=${encodeURIComponent(employeeIdentifier)}`
+            })
+            .then(response => response.json()) // Parse respons sebagai JSON
+            .then(data => {
+                console.log('Respons dari Apps Script:', data);
+                if (data.status === "success") {
+                    const now = new Date();
+                    const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    const dateString = now.toLocaleDateString('id-ID', optionsDate);
+                    const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+                    const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
+                    const formattedAbsenTime = encodeURIComponent(`${dateString}, Pukul ${timeString}`);
+                    
+                    // Redirect ke halaman sukses dengan membawa waktu absensi
+                    window.location.href = `success.html?time=${formattedAbsenTime}`;
+                } else if (data.status === "already_absent") {
+                    resultElement.className = 'already-absent';
+                    // Tampilkan pesan dari Apps Script
+                    resultElement.innerHTML = `Absensi gagal: ${data.message}`; 
+                    setTimeout(() => {
+                        resultElement.innerHTML = 'Arahkan kamera ke QR Code absensi Anda.';
+                        resultElement.className = 'info';
+                        startQrCodeScanner(); // Mulai lagi scanner setelah beberapa detik
+                    }, 4000); // Tampilkan pesan lebih lama
+                } else {
+                    // Penanganan error tak terduga dari Apps Script
+                    resultElement.className = 'camera-error';
+                    resultElement.innerHTML = `Terjadi kesalahan saat memproses absensi: ${data.message || 'Respons tidak dikenal'}.`;
+                    setTimeout(() => {
+                        resultElement.innerHTML = 'Arahkan kamera ke QR Code absensi Anda.';
+                        resultElement.className = 'info';
+                        startQrCodeScanner();
+                    }, 4000);
+                }
+            })
+            .catch(error => {
+                console.error('Error saat mengirim absensi atau memproses respons:', error);
+                resultElement.className = 'camera-error';
+                resultElement.innerHTML = `Terjadi kesalahan jaringan atau server. Silakan coba lagi.`;
+                
+                setTimeout(() => {
+                    resultElement.innerHTML = 'Arahkan kamera ke QR Code absensi Anda.';
+                    resultElement.className = 'info';
+                    startQrCodeScanner();
+                }, 3000);
+            });
+        }
+
+        // Fungsi yang dipanggil jika scan QR Code gagal
+        function onScanFailure(error) {
+            // console.warn(`QR error = ${error}`); // Bisa diaktifkan untuk debugging
+        }
+
+        // Fungsi untuk memulai QR Code scanner
+        function startQrCodeScanner() {
+            if (html5QrCode.isScanning) {
+                html5QrCode.stop().catch(err => console.warn("Error stopping existing scanner:", err));
+            }
+
+            html5QrCode.start(
+                { facingMode: "environment" }, // Gunakan kamera belakang
+                {
+                    fps: 10, // Frames per second
+                    qrbox: {width: 250, height: 250} // Ukuran area scan QR Code
+                },
+                onScanSuccess,
+                onScanFailure
+            ).catch(err => {
+                console.error("Gagal memulai kamera:", err);
+                resultElement.className = 'camera-error';
+                resultElement.innerHTML = `Gagal memulai kamera. Pastikan Anda memberikan izin akses kamera dan tidak ada aplikasi lain yang menggunakan kamera.`;
+            });
+        }
+
+        // Fungsi untuk memperbarui tanggal dan waktu secara real-time
+        function updateDateTime() {
+            const now = new Date();
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('id-ID', optionsDate);
+            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
+
+            document.getElementById('currentDateTime').innerHTML = `${dateString} | ${timeString}`;
+        }
+
+        // Memanggil fungsi updateDateTime setiap 1 detik
+        setInterval(updateDateTime, 1000);
+
+        // Memanggil updateDateTime dan startQrCodeScanner saat halaman web pertama kali dimuat
+        window.onload = function() {
+            updateDateTime();
+            startQrCodeScanner(); // Selalu mulai scanner, pengecekan absensi ganda dilakukan di Apps Script
+        };
+    </script>
+</body>
+</html>
