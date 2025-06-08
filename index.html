@@ -504,7 +504,7 @@
             displayLat.textContent = toDegreesMinutesAndSeconds(latitude, 'lat');
             displayLng.textContent = toDegreesMinutesAndSeconds(longitude, 'lng');
             
-            // UPDATE: Tautan Google Maps dengan format yang lebih robust
+            // Tautan Google Maps di halaman utama tetap ada dan menggunakan format robust
             googleMapsLink.href = `https://www.google.com/maps?q=${latitude},${longitude}`;
             googleMapsLink.style.display = 'inline'; 
 
@@ -619,6 +619,8 @@
             const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbzw3SXiq_1yKyY4W3sj1pFe1CuGBMyUtxrZ7KTRbD4PGvquPrMrvbnZhpoOlO8EEhr0lw/exec'; 
             const employeeIdentifier = "Karyawan Utama"; 
             
+            // HANYA kirim data yang diminta ke GAS: action, qrData, latitude, longitude.
+            // Parameter 'link' tidak dikirim.
             const requestBody = `action=absen&qrData=${encodeURIComponent(employeeIdentifier)}&latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}`;
 
             fetch(googleAppsScriptURL, {
@@ -640,21 +642,21 @@
                     const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
                     const formattedAbsenTime = encodeURIComponent(`${dateString}, Pukul ${timeString}`);
                     
-                    // Alihkan ke success.html jika berhasil
+                    // Alihkan ke success.html, hanya mengirim data yang diminta
                     window.location.href = `success.html?time=${formattedAbsenTime}&lat=${latitude}&lng=${longitude}&dist=${calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LNG)}`;
                 } else if (data.status === "already_absent") {
-                    resultElement.className = 'error'; /* Diatur merah untuk "sudah absen" (ini adalah kondisi gagal) */
+                    resultElement.className = 'error'; 
                     resultElement.innerHTML = `Absensi gagal: ${data.message}`; 
                     absentButton.disabled = false; 
                 } else {
-                    resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah pada error server/tidak dikenal */
+                    resultElement.className = 'error'; 
                     resultElement.innerHTML = `Terjadi kesalahan saat memproses absensi: ${data.message || 'Respons tidak dikenal'}.`;
                     absentButton.disabled = false; 
                 }
             })
             .catch(error => {
                 console.error('Error saat mengirim absensi atau memproses respons:', error);
-                resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah pada kesalahan jaringan/server */
+                resultElement.className = 'error'; 
                 resultElement.innerHTML = `Terjadi kesalahan jaringan atau server. Silakan coba lagi.`;
                 absentButton.disabled = false; 
             });
@@ -695,7 +697,8 @@
             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
             resultElement.className = 'info';
 
-            googleMapsLink.style.display = 'none';
+            // Google Maps link akan diatur visibilitasnya di updateLocationDetails
+            googleMapsLink.style.display = 'none'; 
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
