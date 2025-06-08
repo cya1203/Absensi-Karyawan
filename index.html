@@ -21,9 +21,18 @@
 
             /* Watermark Style START */
             background-repeat: repeat;
-            /* SVG di sini diubah: height, width, dan font-size */
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='250px'><text x='0' y='60' fill='rgba(0, 123, 255, 0.06)' font-family='sans-serif' font-size='24' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
-            background-size: 240px 90px; /* Diperbesar sedikit dari ukuran SVG aslinya */
+            /* Definisi SVG watermark biru */
+            /* Perhatikan pengurangan height dan width SVG */
+            --watermark-blue: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='80px' width='200px'><text x='0' y='50' fill='rgba(0, 123, 255, 0.06)' font-family='sans-serif' font-size='24' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+            /* Definisi SVG watermark orange */
+            /* Perhatikan pengurangan height dan width SVG */
+            --watermark-orange: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='80px' width='200px'><text x='0' y='50' fill='rgba(255, 165, 0, 0.06)' font-family='sans-serif' font-size='24' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+            
+            /* Gunakan kedua SVG dengan background-image */
+            background-image: var(--watermark-blue), var(--watermark-orange);
+            /* background-size dan background-position disesuaikan untuk lebih rapat */
+            background-size: 200px 75px; /* Ukuran per satu watermark, lebih rapat */
+            background-position: 0 0, 100px 37.5px; /* Offset setengah dari background-size */
             /* Watermark Style END */
         }
         
@@ -56,7 +65,6 @@
             text-align: center;
         }
 
-        /* Style untuk tombol */
         .absent-button {
             background-color: #007bff;
             color: white;
@@ -73,12 +81,10 @@
             display: block; 
             margin-left: auto;
             margin-right: auto;
-            /* Penyesuaian di sini untuk satu baris */
-            white-space: nowrap; /* Mencegah teks melipat ke baris baru */
-            min-width: fit-content; /* Pastikan lebar cukup untuk teks */
-            /* Max-width tetap agar tidak terlalu lebar di layar besar */
+            white-space: nowrap; 
+            min-width: fit-content; 
             max-width: 90%; 
-            box-sizing: border-box; /* Pastikan padding dihitung dalam lebar */
+            box-sizing: border-box; 
         }
         .absent-button:hover {
             background-color: #0056b3; 
@@ -145,7 +151,6 @@
             .absent-button {
                 padding: 12px 25px;
                 font-size: 1.8em;
-                /* Ini akan memastikan tombol tidak terlalu besar di HP */
                 max-width: 90%; 
             }
             #result { font-size: 1em; }
@@ -155,8 +160,13 @@
 
             /* Watermark di HP */
             body {
-                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='80px' width='200px'><text x='0' y='50' fill='rgba(0, 123, 255, 0.05)' font-family='sans-serif' font-size='20' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
-                background-size: 190px 70px;
+                /* SVG di HP: height, width tetap 80px, 200px */
+                --watermark-blue-mobile: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='80px' width='200px'><text x='0' y='50' fill='rgba(0, 123, 255, 0.05)' font-family='sans-serif' font-size='20' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+                --watermark-orange-mobile: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='80px' width='200px'><text x='0' y='50' fill='rgba(255, 165, 0, 0.05)' font-family='sans-serif' font-size='20' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+                
+                /* background-size dan background-position disesuaikan untuk lebih rapat di HP */
+                background-size: 180px 65px; /* Lebih rapat dari 190px 70px */
+                background-position: 0 0, 90px 32.5px; /* Offset setengah dari ukuran baru */
             }
         }
     </style>
