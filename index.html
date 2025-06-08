@@ -433,7 +433,7 @@
         const TARGET_LNG = 108.45551912883644;
         const VALID_RADIUS_METERS = 50; // Radius validasi dalam meter
 
-        // Fungsi Haversine untuk menghitung jarak antara dua koordinat (dalam kilometer)
+        // Fungsi Haversine untuk menghitung jarak antara dua koordinat (dalam meter)
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371000; // Radius bumi dalam meter
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -518,6 +518,7 @@
             const distance = calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LNG);
             
             let distanceText;
+            // Format jarak menjadi 2 angka di belakang koma, dan tampilkan 'meter' atau 'km'
             if (distance < 1000) { 
                 distanceText = `${distance.toFixed(2)} meter`;
             } else { 
@@ -556,14 +557,15 @@
                         const latitude = position.coords.latitude;
                         const longitude = position.coords.longitude;
                         
-                        const distance = calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LNG);
+                        const distance = calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LNG); // Hitung jarak di sini
 
+                        // Validasi jarak lagi sebelum mengirim ke GAS
                         if (distance > VALID_RADIUS_METERS) {
                             let distanceText;
                             if (distance < 1000) { distanceText = `${distance.toFixed(2)} meter`; } 
                             else { distanceText = `${(distance / 1000).toFixed(2)} km`; }
 
-                            resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah */
+                            resultElement.className = 'error'; 
                             resultElement.innerHTML = `Absensi gagal: Anda berada ${distanceText} dari lokasi absensi yang valid. Silakan coba lagi di lokasi yang benar.`;
                             absentButton.disabled = true; 
                             document.getElementById('locationDetails').style.display = 'block';
@@ -574,26 +576,26 @@
                         updateLocationDetails(latitude, longitude); 
                         document.getElementById('locationDetails').style.display = 'block';
 
-                        kirimAbsensi(latitude, longitude);
+                        kirimAbsensi(latitude, longitude, distance); // <<< Kirimkan juga nilai distance
                     },
                     (error) => {
                         let errorMessage = "Tidak dapat mendapatkan lokasi. ";
                         switch(error.code) {
                             case error.PERMISSION_DENIED:
                                 errorMessage += "Izin lokasi ditolak. Silakan izinkan lokasi untuk absensi.";
-                                resultElement.className = 'warning-yellow'; // Kuning untuk izin ditolak/lokasi tidak aktif
+                                resultElement.className = 'warning-yellow'; 
                                 break;
                             case error.POSITION_UNAVAILABLE:
                                 errorMessage += "Informasi lokasi tidak tersedia.";
-                                resultElement.className = 'warning-yellow'; // Kuning untuk informasi tidak tersedia
+                                resultElement.className = 'warning-yellow'; 
                                 break;
                             case error.TIMEOUT:
                                 errorMessage += "Waktu habis untuk mendapatkan lokasi.";
-                                resultElement.className = 'warning-yellow'; // Kuning untuk timeout
+                                resultElement.className = 'warning-yellow'; 
                                 break;
                             case error.UNKNOWN_ERROR:
                                 errorMessage += "Terjadi kesalahan tidak dikenal saat mendapatkan lokasi.";
-                                resultElement.className = 'warning-yellow'; // Kuning untuk kesalahan tidak dikenal
+                                resultElement.className = 'warning-yellow'; 
                                 break;
                         }
                         resultElement.innerHTML = `Absensi gagal: ${errorMessage} Silakan refresh halaman dan coba lagi.`;
@@ -608,20 +610,21 @@
                     }
                 );
             } else {
-                resultElement.className = 'warning-yellow'; /* Kuning untuk browser tidak mendukung Geolocation */
+                resultElement.className = 'warning-yellow'; 
                 resultElement.innerHTML = `Absensi gagal: Browser Anda tidak mendukung Geolocation.`;
                 absentButton.disabled = false; 
                 document.getElementById('locationDetails').style.display = 'block';
             }
         }
 
-        function kirimAbsensi(latitude, longitude) {
-            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbzTH6mCdNms3xbeCbbR32ygrZIIe1gW4dvxDpRxMx8TXcSOm8hGN_DAcbIhcBypbPCgjw/exec'; 
+        // Fungsi kirimAbsensi sekarang menerima parameter distance
+        function kirimAbsensi(latitude, longitude, distance) { 
+            // Ganti URL ini dengan URL Google Apps Script Anda yang sudah di-deploy
+            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbxXBS8_-pCSgquZn5epPtez3Kip4p5b6M_5EwGepIYJo6EOIb7fqjdZrSJ_yfKIqLd8uw/exec'; // <<< PERHATIKAN: URL INI MUNGKIN PERLU DIGANTI DENGAN URL TERBARU ANDA
             const employeeIdentifier = "Karyawan Utama"; 
             
-            // HANYA kirim data yang diminta ke GAS: action, qrData, latitude, longitude.
-            // Parameter 'link' tidak dikirim.
-            const requestBody = `action=absen&qrData=${encodeURIComponent(employeeIdentifier)}&latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}`;
+            // Siapkan body permintaan dengan semua parameter yang diperlukan, termasuk distance
+            const requestBody = `action=absen&qrData=${encodeURIComponent(employeeIdentifier)}&latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}&distance=${encodeURIComponent(distance)}`;
 
             fetch(googleAppsScriptURL, {
                 method: 'POST',
