@@ -193,6 +193,17 @@
             font-size: 1em; /* Diubah: ukuran font jarak sedikit lebih kecil */
             margin-top: 8px; /* Diubah: margin top sedikit dikurangi */
         }
+        .map-link { /* Gaya baru untuk tautan peta */
+            display: block; /* Agar menempati baris sendiri */
+            font-size: 0.8em; /* Ukuran kecil */
+            margin-top: 5px; /* Sedikit jarak dari koordinat */
+            color: #007bff;
+            text-decoration: none;
+            text-align: right; /* Rata kanan */
+        }
+        .map-link:hover {
+            text-decoration: underline;
+        }
         
         @media (max-width: 600px) {
             h1 { 
@@ -233,6 +244,9 @@
             #locationDetails p.distance-info { 
                 font-size: 0.9em; /* Diubah: ukuran font waktu dan jarak mobile lebih kecil */
             }
+            .map-link { /* Gaya baru untuk tautan peta di mobile */
+                font-size: 0.7em; /* Lebih kecil lagi untuk mobile */
+            }
 
             /* Watermark di HP */
             body {
@@ -259,7 +273,7 @@
     <div id="distanceNotification"></div> <div id="locationDetails">
         <h3>Detail Lokasi Saat Ini</h3> 
         <p><strong>Koordinat:</strong> <span id="displayLat">...</span>, <span id="displayLng">...</span></p>
-        <p><strong>Lokasi Saat Ini:</strong> <span id="displayAddress">Mencari lokasi...</span></p>
+        <a href="#" id="googleMapsLink" class="map-link" target="_blank">Lihat di Google Maps</a> <p><strong>Lokasi Saat Ini:</strong> <span id="displayAddress">Mencari lokasi...</span></p>
         <p class="current-time-display"><strong>Waktu Saat Ini:</strong> <span id="displayCurrentTime">...</span></p>
         <p class="distance-info"><strong>Jarak dari Lokasi Absensi:</strong> <span id="displayTargetDistance">...</span></p> </div>
 
@@ -276,9 +290,9 @@
         const displayCurrentTime = document.getElementById('displayCurrentTime');
         const displayTargetDistance = document.getElementById('displayTargetDistance'); // Elemen untuk jarak ke titik target
         const distanceNotification = document.getElementById('distanceNotification'); // Elemen notifikasi
+        const googleMapsLink = document.getElementById('googleMapsLink'); // Elemen tautan Google Maps
 
         // Koordinat lokasi target absensi (titik yang diberikan)
-        // Diubah: Koordinat lokasi validasi baru
         const TARGET_LAT = -6.53336932533567; 
         const TARGET_LNG = 108.45551912883644;
         const VALID_RADIUS_METERS = 30; // Radius validasi dalam meter
@@ -354,6 +368,10 @@
             displayLat.textContent = toDegreesMinutesAndSeconds(latitude, 'lat');
             displayLng.textContent = toDegreesMinutesAndSeconds(longitude, 'lng');
             
+            // Update tautan Google Maps
+            googleMapsLink.href = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+            googleMapsLink.style.display = 'block'; // Pastikan tautan terlihat setelah koordinat ditemukan
+
             displayAddress.textContent = 'Mencari lokasi...';
             displayTargetDistance.textContent = 'Menghitung...';
 
@@ -550,6 +568,9 @@
             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
             resultElement.className = 'info';
 
+            // Sembunyikan tautan peta secara default sampai koordinat tersedia
+            googleMapsLink.style.display = 'none';
+
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -558,13 +579,13 @@
                     (error) => {
                         console.warn("Gagal mendapatkan lokasi saat memuat halaman:", error);
                         // Jika tidak mendapatkan lokasi, inisialisasi detail lokasi di lokasi default (contoh: Jakarta)
-                        // Diubah: Koordinat default juga diubah sesuai target
-                        updateLocationDetails(TARGET_LAT, TARGET_LNG, true); 
+                        updateLocationDetails(TARGET_LAT, TARGET_LNG, true); // Menggunakan TARGET_LAT/LNG sebagai fallback
                         displayAddress.textContent = 'Tidak dapat mendeteksi lokasi saat ini.';
                         displayTargetDistance.textContent = 'Tidak dapat menghitung jarak.';
                         distanceNotification.style.display = 'block';
                         distanceNotification.innerHTML = `Peringatan!! Gagal mendapatkan lokasi. Absensi mungkin tidak valid.`;
                         absentButton.disabled = true;
+                        googleMapsLink.style.display = 'none'; // Sembunyikan tautan jika lokasi tidak didapat
                     },
                     {
                         enableHighAccuracy: true, 
@@ -573,13 +594,13 @@
                     }
                 );
             } else {
-                // Diubah: Koordinat default juga diubah sesuai target
-                updateLocationDetails(TARGET_LAT, TARGET_LNG, true); 
+                updateLocationDetails(TARGET_LAT, TARGET_LNG, true); // Menggunakan TARGET_LAT/LNG sebagai fallback
                 displayAddress.textContent = 'Geolocation tidak didukung browser.';
                 displayTargetDistance.textContent = 'Tidak dapat menghitung jarak.';
                 distanceNotification.style.display = 'block';
                 distanceNotification.innerHTML = `Peringatan!! Browser Anda tidak mendukung Geolocation. Absensi mungkin tidak valid.`;
                 absentButton.disabled = true;
+                googleMapsLink.style.display = 'none'; // Sembunyikan tautan jika geolocation tidak didukung
             }
         };
     </script>
