@@ -21,12 +21,11 @@
 
             /* Watermark Style START */
             background-repeat: repeat;
-            --watermark-blue: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='70px' width='180px'><text x='0' y='45' fill='rgba(0, 123, 255, 0.05)' font-family='sans-serif' font-size='22' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
-            --watermark-orange: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='70px' width='180px'><text x='0' y='45' fill='rgba(255, 165, 0, 0.05)' font-family='sans-serif' font-size='22' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+            --watermark-blue: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='70px' width='180px'><text x='0' y='45' fill='rgba(0, 123, 255, 0.1)' font-family='sans-serif' font-size='22' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
             
-            background-image: var(--watermark-blue), var(--watermark-orange);
+            background-image: var(--watermark-blue);
             background-size: 170px 65px; 
-            background-position: 0 0, 85px 32.5px; 
+            background-position: 0 0; 
             /* Watermark Style END */
         }
         
@@ -129,6 +128,20 @@
             max-width: 80%;
         }
 
+        /* Notifikasi Jarak */
+        #distanceNotification {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #dc3545; /* Merah untuk peringatan */
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #dc3545;
+            background-color: #f8d7da;
+            border-radius: 5px;
+            display: none; /* Sembunyikan secara default */
+        }
+
         .footer-text {
             margin-top: 30px;
             font-size: 0.8em;
@@ -136,22 +149,12 @@
             text-align: center;
         }
 
-        /* Hapus style untuk peta karena tidak ada lagi */
-        /* #map {
-            height: 300px; 
-            width: 80%; 
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            max-width: 500px; 
-        } */
-
         /* Style untuk detail lokasi */
         #locationDetails {
-            margin-top: 15px; /* Sesuaikan margin jika peta dihapus */
+            margin-top: 15px;
             font-size: 1em;
             color: #333;
-            text-align: left; /* Teks rata kiri untuk daftar */
+            text-align: left;
             width: 80%;
             max-width: 500px;
             background-color: #fff;
@@ -159,18 +162,34 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        /* Judul Detail Lokasi */
+        #locationDetails h3 {
+            color: #004a99; /* Warna biru untuk judul */
+            font-size: 1.3em; /* Ukuran yang sedikit lebih besar */
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #004a99; /* Garis bawah biru */
+            padding-bottom: 5px;
+        }
+
         #locationDetails p {
             margin: 5px 0;
             line-height: 1.4;
-            font-size: 0.95em; /* Sedikit lebih kecil agar lebih ringkas */
-            color: #555;
+            font-size: 1em; /* Mengubah ukuran text agar sama besar */
+            color: #007bff; /* Warna biru untuk semua sub-detail */
         }
         #locationDetails p strong {
-            color: #007bff; /* Warna biru untuk label */
+            color: #004a99; /* Warna biru yang lebih gelap untuk label */
         }
         #locationDetails p.current-time-display {
             font-weight: bold;
             color: #004a99; /* Warna biru BRI */
+            font-size: 1.1em; /* Sedikit lebih besar untuk waktu */
+            margin-top: 10px;
+        }
+        #locationDetails p.distance-info { /* Class baru untuk jarak */
+            color: #007bff; /* Biru untuk informasi jarak */
+            font-weight: bold;
             font-size: 1.1em;
             margin-top: 10px;
         }
@@ -194,32 +213,31 @@
             .processing-success { font-size: 1.1em !important; }
             .already-absent { font-size: 1em !important; max-width: 95%; }
             .footer-text { font-size: 0.7em; }
+            #distanceNotification { font-size: 0.9em; }
             
-            /* Hapus penyesuaian ukuran peta untuk mobile */
-            /* #map {
-                width: 95%; 
-                height: 250px; 
-            } */
-
             /* Penyesuaian detail lokasi untuk mobile */
             #locationDetails {
                 width: 95%;
                 padding: 12px;
             }
-            #locationDetails p {
-                font-size: 0.85em; /* Lebih kecil lagi di mobile */
+            #locationDetails h3 {
+                font-size: 1.2em;
             }
-            #locationDetails p.current-time-display {
+            #locationDetails p {
+                font-size: 0.9em; /* Sedikit lebih kecil lagi di mobile untuk sub-detail */
+            }
+            #locationDetails p.current-time-display,
+            #locationDetails p.distance-info { /* Sesuaikan juga untuk mobile */
                 font-size: 1em;
             }
 
             /* Watermark di HP */
             body {
-                --watermark-blue-mobile: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='60px' width='150px'><text x='0' y='40' fill='rgba(0, 123, 255, 0.04)' font-family='sans-serif' font-size='18' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
-                --watermark-orange-mobile: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='60px' width='150px'><text x='0' y='40' fill='rgba(255, 165, 0, 0.04)' font-family='sans-serif' font-size='18' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+                --watermark-blue-mobile: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='60px' width='150px'><text x='0' y='40' fill='rgba(0, 123, 255, 0.08)' font-family='sans-serif' font-size='18' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
                 
+                background-image: var(--watermark-blue-mobile); 
                 background-size: 140px 55px; 
-                background-position: 0 0, 70px 27.5px; 
+                background-position: 0 0; 
             }
         }
     </style>
@@ -235,11 +253,12 @@
     <button id="absentButton" class="absent-button">KLIK UNTUK ABSEN</button>
     <div id="result" class="info">Tekan tombol di atas untuk mencatat absensi.</div>
 
-    <div id="locationDetails">
+    <div id="distanceNotification"></div> <div id="locationDetails">
+        <h3>Detail Lokasi Saat Ini</h3> 
         <p><strong>Koordinat:</strong> <span id="displayLat">...</span>, <span id="displayLng">...</span></p>
-        <p><strong>Alamat:</strong> <span id="displayAddress">Mencari alamat...</span></p>
+        <p><strong>Lokasi Saat Ini:</strong> <span id="displayAddress">Mencari lokasi...</span></p>
         <p class="current-time-display"><strong>Waktu Saat Ini:</strong> <span id="displayCurrentTime">...</span></p>
-    </div>
+        <p class="distance-info"><strong>Jarak dari Lokasi Absensi:</strong> <span id="displayTargetDistance">...</span></p> </div>
 
     <div class="footer-text">
         Dikembangkan oleh Muhammad Jodi Marties Seviadi
@@ -252,15 +271,31 @@
         const displayLng = document.getElementById('displayLng');
         const displayAddress = document.getElementById('displayAddress');
         const displayCurrentTime = document.getElementById('displayCurrentTime');
+        const displayTargetDistance = document.getElementById('displayTargetDistance'); // Elemen untuk jarak ke titik target
+        const distanceNotification = document.getElementById('distanceNotification'); // Elemen notifikasi
 
-        // Hapus variabel global untuk peta dan marker
-        // let currentMap = null; 
-        // let currentMarker = null; 
+        // Koordinat lokasi target absensi (titik yang diberikan)
+        const TARGET_LAT = -6.1754; 
+        const TARGET_LNG = 106.8272;
+        const VALID_RADIUS_METERS = 30; // Radius validasi dalam meter
+
+        // Fungsi Haversine untuk menghitung jarak antara dua koordinat (dalam kilometer)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371000; // Radius bumi dalam meter
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c;
+            return distance; // Jarak dalam meter
+        }
 
         // Fungsi untuk memperbarui tampilan waktu di detail lokasi
         function updateDisplayTime() {
             const now = new Date();
-            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, hourCycle: 'h23' }; 
             const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
             displayCurrentTime.textContent = timeString;
         }
@@ -275,36 +310,79 @@
                 let addressParts = [];
                 const address = data.address;
 
-                // Urutan prioritas dari Nominatim, sesuaikan jika ada kebutuhan lain
                 if (address.road) addressParts.push(address.road);
-                if (address.suburb) addressParts.push(address.suburb); // Untuk kelurahan/dusun jika ada
-                if (address.village) addressParts.push(address.village); // Desa
-                else if (address.town) addressParts.push(address.town); // Kota kecil
-                else if (address.city) addressParts.push(address.city); // Kota besar
+                if (address.suburb) addressParts.push(address.suburb);
+                if (address.village) addressParts.push(address.village);
+                else if (address.town) addressParts.push(address.town);
+                else if (address.city) addressParts.push(address.city);
                 
-                if (address.county) addressParts.push(address.county); // Kabupaten/Kota Administrasi
-                if (address.state) addressParts.push(address.state); // Provinsi
+                if (address.county) addressParts.push(address.county);
+                if (address.state) addressParts.push(address.state);
                 if (address.country) addressParts.push(address.country);
 
-                // Jika tidak ada detail spesifik, gunakan display_name lengkap
                 return addressParts.length > 0 ? addressParts.join(', ') : data.display_name;
 
             } catch (error) {
                 console.error('Error fetching address:', error);
-                return 'Tidak dapat menemukan alamat.';
+                return 'Tidak dapat menemukan lokasi.';
             }
         }
 
-        // Fungsi untuk menampilkan detail lokasi tanpa peta
-        async function updateLocationDetails(latitude, longitude) {
-            // Tampilkan koordinat
-            displayLat.textContent = latitude.toFixed(6); // Batasi 6 desimal
-            displayLng.textContent = longitude.toFixed(6); // Batasi 6 desimal
-            displayAddress.textContent = 'Mencari alamat...'; // Reset saat mencari alamat baru
+        // Fungsi untuk menampilkan detail lokasi dan memvalidasi jarak
+        async function updateLocationDetails(latitude, longitude, isInitialLoad = false) {
+            // Koordinat dengan presisi tinggi dan format 'derajat, menit, detik'
+            function toDegreesMinutesAndSeconds(coord, type) {
+                const absolute = Math.abs(coord);
+                const degrees = Math.floor(absolute);
+                const minutesNotTruncated = (absolute - degrees) * 60;
+                const minutes = Math.floor(minutesNotTruncated);
+                const seconds = ((minutesNotTruncated - minutes) * 60).toFixed(2); 
 
-            // Dapatkan alamat dan tampilkan
+                let direction = '';
+                if (type === 'lat') {
+                    direction = coord >= 0 ? 'N' : 'S';
+                } else if (type === 'lng') {
+                    direction = coord >= 0 ? 'E' : 'W';
+                }
+                return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+            }
+
+            displayLat.textContent = toDegreesMinutesAndSeconds(latitude, 'lat');
+            displayLng.textContent = toDegreesMinutesAndSeconds(longitude, 'lng');
+            
+            displayAddress.textContent = 'Mencari lokasi...';
+            displayTargetDistance.textContent = 'Menghitung...';
+
+            // Dapatkan alamat
             const address = await getAddressFromCoordinates(latitude, longitude);
             displayAddress.textContent = address;
+
+            // Hitung jarak ke titik target
+            const distance = calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LNG);
+            
+            let distanceText;
+            if (distance < 1000) { // Jika kurang dari 1 km, tampilkan dalam meter
+                distanceText = `${distance.toFixed(2)} meter`;
+            } else { // Jika lebih dari 1 km, tampilkan dalam kilometer
+                distanceText = `${(distance / 1000).toFixed(2)} km`;
+            }
+            displayTargetDistance.textContent = distanceText;
+
+            // Validasi jarak
+            if (distance > VALID_RADIUS_METERS) {
+                if (isInitialLoad) {
+                    distanceNotification.style.display = 'block';
+                    distanceNotification.innerHTML = `⚠️ **Peringatan:** Anda berada **${distanceText}** dari lokasi absensi yang valid. Absensi mungkin tidak tercatat!`;
+                }
+                absentButton.disabled = true;
+                resultElement.className = 'error';
+                resultElement.innerHTML = `Anda terlalu jauh dari lokasi absensi yang valid. Jarak: ${distanceText}`;
+            } else {
+                distanceNotification.style.display = 'none'; // Sembunyikan notifikasi jika dalam radius
+                absentButton.disabled = false;
+                resultElement.className = 'info';
+                resultElement.innerHTML = `Tekan tombol di atas untuk mencatat absensi. Anda berada ${distanceText} dari lokasi absensi.`;
+            }
         }
 
         // Fungsi untuk mendapatkan lokasi dan kemudian mencatat absensi
@@ -313,8 +391,8 @@
             resultElement.className = 'processing-success';
             resultElement.innerHTML = `Memproses absensi dan mendapatkan lokasi...`;
             
-            // Sembunyikan detail lokasi sebentar saat memproses
             document.getElementById('locationDetails').style.display = 'none';
+            distanceNotification.style.display = 'none'; // Sembunyikan notifikasi saat proses absen
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -322,11 +400,29 @@
                         const latitude = position.coords.latitude;
                         const longitude = position.coords.longitude;
                         
-                        // Perbarui detail lokasi tanpa peta
-                        updateLocationDetails(latitude, longitude);
-                        document.getElementById('locationDetails').style.display = 'block'; // Tampilkan lagi
+                        const distance = calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LNG);
 
-                        // Panggil fungsi absensi setelah mendapatkan lokasi
+                        if (distance > VALID_RADIUS_METERS) {
+                            let distanceText;
+                            if (distance < 1000) { distanceText = `${distance.toFixed(2)} meter`; } 
+                            else { distanceText = `${(distance / 1000).toFixed(2)} km`; }
+
+                            resultElement.className = 'error';
+                            resultElement.innerHTML = `Absensi gagal: Anda berada ${distanceText} dari lokasi absensi yang valid. Silakan coba lagi di lokasi yang benar.`;
+                            absentButton.disabled = true; // Tetap disable jika terlalu jauh
+                            document.getElementById('locationDetails').style.display = 'block';
+                            updateLocationDetails(latitude, longitude); // Update detail lokasi juga
+                            setTimeout(() => {
+                                resultElement.innerHTML = `Tekan tombol di atas untuk mencatat absensi. Anda terlalu jauh (${distanceText}).`;
+                                resultElement.className = 'info';
+                                // absentButton.disabled = false; // Biarkan disabled sampai lokasi valid
+                            }, 5000); 
+                            return; // Hentikan proses absensi
+                        }
+
+                        updateLocationDetails(latitude, longitude); // Perbarui detail lokasi sebelum absen
+                        document.getElementById('locationDetails').style.display = 'block';
+
                         kirimAbsensi(latitude, longitude);
                     },
                     (error) => {
@@ -351,7 +447,7 @@
                             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                             resultElement.className = 'info';
                             absentButton.disabled = false; 
-                            document.getElementById('locationDetails').style.display = 'block'; // Tampilkan lagi
+                            document.getElementById('locationDetails').style.display = 'block';
                         }, 5000); 
                         console.error('Error saat mendapatkan lokasi:', error);
                     },
@@ -368,7 +464,7 @@
                     resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                     resultElement.className = 'info';
                     absentButton.disabled = false; 
-                    document.getElementById('locationDetails').style.display = 'block'; // Tampilkan lagi
+                    document.getElementById('locationDetails').style.display = 'block';
                 }, 4000);
             }
         }
@@ -394,11 +490,11 @@
                     const now = new Date();
                     const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                     const dateString = now.toLocaleDateString('id-ID', optionsDate);
-                    const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+                    const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, hourCycle: 'h23' }; 
                     const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
                     const formattedAbsenTime = encodeURIComponent(`${dateString}, Pukul ${timeString}`);
                     
-                    window.location.href = `success.html?time=${formattedAbsenTime}&lat=${latitude}&lng=${longitude}`; // Tambahkan lat & lng ke URL
+                    window.location.href = `success.html?time=${formattedAbsenTime}&lat=${latitude}&lng=${longitude}&dist=${calculateDistance(latitude, longitude, TARGET_LAT, TARGET_LNG)}`;
                 } else if (data.status === "already_absent") {
                     resultElement.className = 'already-absent';
                     resultElement.innerHTML = `Absensi gagal: ${data.message}`; 
@@ -436,7 +532,7 @@
             const now = new Date();
             const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const dateString = now.toLocaleDateString('id-ID', optionsDate);
-            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, hourCycle: 'h23' }; 
             const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
 
             document.getElementById('currentDateTime').innerHTML = `${dateString} | ${timeString}`;
@@ -444,40 +540,41 @@
 
         window.onload = function() {
             updateDateTime();
-            setInterval(updateDateTime, 1000); // Update waktu di header
-            setInterval(updateDisplayTime, 1000); // Update waktu di detail lokasi
+            setInterval(updateDateTime, 1000);
+            setInterval(updateDisplayTime, 1000); 
             absentButton.disabled = false;
             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
             resultElement.className = 'info';
 
-            // Inisialisasi detail lokasi dengan lokasi default jika tidak ada lokasi yang ditemukan
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        updateLocationDetails(position.coords.latitude, position.coords.longitude);
+                        updateLocationDetails(position.coords.latitude, position.coords.longitude, true); // Teruskan 'true' untuk inisialisasi
                     },
                     (error) => {
                         console.warn("Gagal mendapatkan lokasi saat memuat halaman:", error);
                         // Jika tidak mendapatkan lokasi, inisialisasi detail lokasi di lokasi default (contoh: Jakarta)
-                        updateLocationDetails(-6.2088, 106.8456); // Koordinat default Jakarta
+                        updateLocationDetails(-6.2088, 106.8456, true); 
                         displayAddress.textContent = 'Tidak dapat mendeteksi lokasi saat ini.';
+                        displayTargetDistance.textContent = 'Tidak dapat menghitung jarak.';
+                        distanceNotification.style.display = 'block';
+                        distanceNotification.innerHTML = `⚠️ **Peringatan:** Gagal mendapatkan lokasi. Absensi mungkin tidak valid.`;
+                        absentButton.disabled = true;
                     },
                     {
-                        enableHighAccuracy: false, // Kurangi akurasi untuk load awal
+                        enableHighAccuracy: true, 
                         timeout: 5000,
-                        maximumAge: 0             // Selalu coba dapatkan lokasi terbaru untuk load awal
+                        maximumAge: 0             
                     }
                 );
             } else {
-                updateLocationDetails(-6.2088, 106.8456); // Koordinat default Jakarta
+                updateLocationDetails(-6.2088, 106.8456, true); // Inisialisasi dengan lokasi default
                 displayAddress.textContent = 'Geolocation tidak didukung browser.';
+                displayTargetDistance.textContent = 'Tidak dapat menghitung jarak.';
+                distanceNotification.style.display = 'block';
+                distanceNotification.innerHTML = `⚠️ **Peringatan:** Browser Anda tidak mendukung Geolocation. Absensi mungkin tidak valid.`;
+                absentButton.disabled = true;
             }
-            // Hapus event listener untuk meresize peta karena tidak ada peta lagi
-            // window.addEventListener('resize', () => {
-            //     if (currentMap) {
-            //         currentMap.invalidateSize();
-            //     }
-            // });
         };
     </script>
 </body>
