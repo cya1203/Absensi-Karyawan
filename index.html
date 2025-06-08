@@ -69,7 +69,7 @@
             font-size: 2em;
             font-weight: bold;
             border: none;
-            border-radius: 10px;
+            border-radius: 15px; /* DIBULATKAN */
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: background-color 0.3s ease, transform 0.1s ease;
@@ -112,7 +112,7 @@
             border: 1px solid #ffeeba; /* Border kuning */
             font-weight: bold;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 8px; /* DIBULATKAN */
             margin: 15px auto;
             max-width: 80%;
         }
@@ -133,7 +133,7 @@
             padding: 10px;
             border: 1px solid #dc3545; /* Border juga merah */
             background-color: #f8d7da; /* Background juga merah */
-            border-radius: 5px;
+            border-radius: 8px; /* DIBULATKAN */
             margin: 15px auto;
             max-width: 80%;
         }
@@ -145,7 +145,7 @@
             font-weight: bold;
             text-align: center;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 8px; /* DIBULATKAN */
             display: none; 
         }
         #locationValidationMessage.warning { 
@@ -177,7 +177,7 @@
             max-width: 400px; 
             background-color: #fff;
             padding: 10px; 
-            border-radius: 8px;
+            border-radius: 10px; /* DIBULATKAN */
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         /* Judul Detail Lokasi */
@@ -303,7 +303,7 @@
             #welcomeBox {
                 background-color: white;
                 padding: 30px 20px;
-                border-radius: 0; /* Tanpa sudut membulat */
+                border-radius: 10px; /* DIBULATKAN */
                 box-shadow: 0 0 15px rgba(0,0,0,0.1);
                 max-width: 90%;
                 width: 350px;
@@ -336,12 +336,13 @@
                 font-weight: normal;
             }
 
-            /* Gaya untuk kotak waktu mundur merah */
+            /* Gaya untuk kotak waktu mundur kuning */
             #welcomeCountdown {
-                background-color: #dc3545; /* Merah seperti notifikasi gagal */
-                color: white;
+                background-color: #fff3cd; /* Kuning muda */
+                color: #856404; /* Kuning gelap untuk teks */
+                border: 1px solid #ffeeba; /* Border kuning */
                 padding: 10px 15px;
-                border-radius: 5px; /* Sedikit membulat agar terlihat seperti notifikasi */
+                border-radius: 5px; /* DIBULATKAN */
                 font-size: 1.3em; /* Font lebih besar */
                 font-weight: bold;
                 margin-top: 10px; /* Jarak dari elemen di atasnya */
