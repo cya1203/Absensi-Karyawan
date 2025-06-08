@@ -19,29 +19,27 @@
             position: relative;
             overflow: hidden;
 
-            /* Watermark Style */
+            /* Watermark Style START */
             background-repeat: repeat;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='60px' width='150px'><text x='0' y='40' fill='rgba(0, 123, 255, 0.08)' font-family='sans-serif' font-size='16' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
-            background-size: 140px 60px;
+            /* SVG di sini diubah: height, width, dan font-size */
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='250px'><text x='0' y='60' fill='rgba(0, 123, 255, 0.06)' font-family='sans-serif' font-size='24' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+            background-size: 240px 90px; /* Diperbesar sedikit dari ukuran SVG aslinya */
+            /* Watermark Style END */
         }
         
         h1 {
             color: #333;
             margin-bottom: 15px;
             text-align: center;
-            /* Perbesar ukuran font Absensi Karyawan */
-            font-size: 2.8em; /* Ukuran default untuk desktop/tablet */
+            font-size: 2.8em; 
         }
-        /* Style untuk nama toko (Latucya BRILink Gradasi) */
         .store-name {
-            /* Perbesar ukuran font Latucya BRILink */
-            font-size: 3em; /* Ukuran default untuk desktop/tablet */
+            font-size: 3em; 
             margin-top: -10px;
             margin-bottom: 25px;
             text-align: center;
             font-weight: bold;
         }
-        /* Style untuk gradasi teks */
         .gradient-text {
             background: linear-gradient(to right, #007bff, orange);
             -webkit-background-clip: text;
@@ -50,7 +48,6 @@
             color: transparent;
         }
 
-        /* Style untuk tanggal dan waktu */
         #currentDateTime {
             font-size: 1.5em;
             margin-bottom: 25px;
@@ -59,13 +56,11 @@
             text-align: center;
         }
 
-        /* Style untuk tombol */
         .absent-button {
-            background-color: #007bff; /* Warna biru */
+            background-color: #007bff;
             color: white;
-            /* Ukuran padding dan font disesuaikan untuk responsif */
-            padding: 15px 30px; /* Padding default */
-            font-size: 2em; /* Ukuran font default */
+            padding: 15px 30px;
+            font-size: 2em;
             font-weight: bold;
             border: none;
             border-radius: 10px;
@@ -78,7 +73,7 @@
             margin-left: auto;
             margin-right: auto;
             max-width: 90%; 
-            width: fit-content; /* Sesuaikan lebar dengan konten */
+            width: fit-content; 
         }
         .absent-button:hover {
             background-color: #0056b3; 
@@ -104,7 +99,6 @@
         .error { color: #dc3545; font-weight: bold; }
         .info { color: #007bff; }
         
-        /* Style untuk pesan memproses/sukses absensi */
         .processing-success {
             color: #28a745 !important;
             font-size: 1.4em !important;
@@ -113,7 +107,6 @@
             padding: 10px;
         }
 
-        /* Style untuk notifikasi sudah absen */
         .already-absent {
             color: #ffc107 !important;
             font-size: 1.3em !important;
@@ -127,7 +120,6 @@
             max-width: 80%;
         }
 
-        /* Style untuk footer "Dikembangkan oleh" */
         .footer-text {
             margin-top: 30px;
             font-size: 0.8em;
@@ -135,25 +127,31 @@
             text-align: center;
         }
         
-        /* Media Queries untuk responsif di layar kecil (HP Android) */
         @media (max-width: 600px) {
             h1 { 
-                font-size: 2.2em; /* Font "Absensi Karyawan" di HP */
+                font-size: 2.2em; 
             }
             .store-name { 
-                font-size: 2.5em; /* Font "Latucya BRILink" di HP */
+                font-size: 2.5em; 
             }
             #currentDateTime { 
                 font-size: 1.1em; 
             }
             .absent-button {
-                padding: 12px 25px; /* Padding tombol di HP, sedikit lebih kecil */
-                font-size: 1.8em; /* Ukuran font tombol di HP */
+                padding: 12px 25px;
+                font-size: 1.8em;
             }
             #result { font-size: 1em; }
             .processing-success { font-size: 1.1em !important; }
             .already-absent { font-size: 1em !important; max-width: 95%; }
             .footer-text { font-size: 0.7em; }
+
+            /* Watermark di HP */
+            body {
+                /* SVG di HP: height, width, dan font-size yang berbeda */
+                background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='80px' width='200px'><text x='0' y='50' fill='rgba(0, 123, 255, 0.05)' font-family='sans-serif' font-size='20' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
+                background-size: 190px 70px; /* Ukuran tampilan watermark di HP */
+            }
         }
     </style>
 </head>
