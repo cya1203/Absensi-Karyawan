@@ -616,7 +616,7 @@
         }
 
         function kirimAbsensi(latitude, longitude) {
-            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbylpberCGCHHDU3_wEZbQbz1pSHSNfBJu4NJp6lCkotLY5evYYzGC5-s-FkmVTFMjy1/exec'; 
+            const googleAppsScriptURL = 'https://script.google.com/macros/s/AKfycbzw3SXiq_1yKyY4W3sj1pFe1CuGBMyUtxrZ7KTRbD4PGvquPrMrvbnZhpoOlO8EEhr0lw/exec'; 
             const employeeIdentifier = "Karyawan Utama"; 
             
             const requestBody = `action=absen&qrData=${encodeURIComponent(employeeIdentifier)}&latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}`;
