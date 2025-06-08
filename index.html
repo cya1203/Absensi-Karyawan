@@ -152,30 +152,30 @@
         /* Style untuk detail lokasi */
         #locationDetails {
             margin-top: 15px;
-            font-size: 1em;
+            font-size: 0.9em; /* Diubah: ukuran font keseluruhan lebih kecil */
             color: #333;
             text-align: left;
             width: 80%;
-            max-width: 500px;
+            max-width: 450px; /* Diubah: max-width sedikit dikurangi */
             background-color: #fff;
-            padding: 15px;
+            padding: 12px; /* Diubah: padding sedikit dikurangi */
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         /* Judul Detail Lokasi */
         #locationDetails h3 {
             color: #004a99; /* Warna biru untuk judul */
-            font-size: 1.3em; /* Ukuran yang sedikit lebih besar */
+            font-size: 1.1em; /* Diubah: ukuran judul lebih kecil */
             margin-top: 0;
-            margin-bottom: 10px;
+            margin-bottom: 8px; /* Diubah: margin bawah sedikit dikurangi */
             border-bottom: 2px solid #004a99; /* Garis bawah biru */
-            padding-bottom: 5px;
+            padding-bottom: 4px; /* Diubah: padding bawah sedikit dikurangi */
         }
 
         #locationDetails p {
-            margin: 5px 0;
-            line-height: 1.4;
-            font-size: 1em; /* Mengubah ukuran text agar sama besar */
+            margin: 4px 0; /* Diubah: margin vertikal lebih kecil */
+            line-height: 1.3; /* Diubah: line-height sedikit dikurangi */
+            font-size: 0.95em; /* Diubah: ukuran font paragraf sedikit lebih kecil */
             color: #007bff; /* Warna biru untuk semua sub-detail */
         }
         #locationDetails p strong {
@@ -184,14 +184,14 @@
         #locationDetails p.current-time-display {
             font-weight: bold;
             color: #004a99; /* Warna biru BRI */
-            font-size: 1.1em; /* Sedikit lebih besar untuk waktu */
-            margin-top: 10px;
+            font-size: 1em; /* Diubah: ukuran font waktu sedikit lebih kecil */
+            margin-top: 8px; /* Diubah: margin top sedikit dikurangi */
         }
         #locationDetails p.distance-info { /* Class baru untuk jarak */
             color: #007bff; /* Biru untuk informasi jarak */
             font-weight: bold;
-            font-size: 1.1em;
-            margin-top: 10px;
+            font-size: 1em; /* Diubah: ukuran font jarak sedikit lebih kecil */
+            margin-top: 8px; /* Diubah: margin top sedikit dikurangi */
         }
         
         @media (max-width: 600px) {
@@ -218,17 +218,20 @@
             /* Penyesuaian detail lokasi untuk mobile */
             #locationDetails {
                 width: 95%;
-                padding: 12px;
+                padding: 10px; /* Diubah: padding untuk mobile lebih kecil */
+                font-size: 0.85em; /* Diubah: ukuran font keseluruhan mobile lebih kecil */
+                max-width: unset; /* Hapus max-width agar menyesuaikan lebar layar */
             }
             #locationDetails h3 {
-                font-size: 1.2em;
+                font-size: 1em; /* Diubah: ukuran judul mobile lebih kecil */
             }
             #locationDetails p {
-                font-size: 0.9em; /* Sedikit lebih kecil lagi di mobile untuk sub-detail */
+                font-size: 0.85em; /* Diubah: ukuran font paragraf mobile lebih kecil */
+                margin: 3px 0; /* Diubah: margin vertikal mobile lebih kecil */
             }
             #locationDetails p.current-time-display,
-            #locationDetails p.distance-info { /* Sesuaikan juga untuk mobile */
-                font-size: 1em;
+            #locationDetails p.distance-info { 
+                font-size: 0.9em; /* Diubah: ukuran font waktu dan jarak mobile lebih kecil */
             }
 
             /* Watermark di HP */
@@ -275,8 +278,9 @@
         const distanceNotification = document.getElementById('distanceNotification'); // Elemen notifikasi
 
         // Koordinat lokasi target absensi (titik yang diberikan)
-        const TARGET_LAT = -6.1754; 
-        const TARGET_LNG = 106.8272;
+        // Diubah: Koordinat lokasi validasi baru
+        const TARGET_LAT = -6.53336932533567; 
+        const TARGET_LNG = 108.45551912883644;
         const VALID_RADIUS_METERS = 30; // Radius validasi dalam meter
 
         // Fungsi Haversine untuk menghitung jarak antara dua koordinat (dalam kilometer)
@@ -372,7 +376,7 @@
             if (distance > VALID_RADIUS_METERS) {
                 if (isInitialLoad) {
                     distanceNotification.style.display = 'block';
-                    distanceNotification.innerHTML = `⚠️ **Peringatan:** Anda berada **${distanceText}** dari lokasi absensi yang valid. Absensi mungkin tidak tercatat!`;
+                    distanceNotification.innerHTML = `Peringatan!! Anda berada **${distanceText}** dari lokasi absensi yang valid. Absensi mungkin tidak tercatat!`;
                 }
                 absentButton.disabled = true;
                 resultElement.className = 'error';
@@ -554,11 +558,12 @@
                     (error) => {
                         console.warn("Gagal mendapatkan lokasi saat memuat halaman:", error);
                         // Jika tidak mendapatkan lokasi, inisialisasi detail lokasi di lokasi default (contoh: Jakarta)
-                        updateLocationDetails(-6.2088, 106.8456, true); 
+                        // Diubah: Koordinat default juga diubah sesuai target
+                        updateLocationDetails(TARGET_LAT, TARGET_LNG, true); 
                         displayAddress.textContent = 'Tidak dapat mendeteksi lokasi saat ini.';
                         displayTargetDistance.textContent = 'Tidak dapat menghitung jarak.';
                         distanceNotification.style.display = 'block';
-                        distanceNotification.innerHTML = `⚠️ **Peringatan:** Gagal mendapatkan lokasi. Absensi mungkin tidak valid.`;
+                        distanceNotification.innerHTML = `Peringatan!! Gagal mendapatkan lokasi. Absensi mungkin tidak valid.`;
                         absentButton.disabled = true;
                     },
                     {
@@ -568,11 +573,12 @@
                     }
                 );
             } else {
-                updateLocationDetails(-6.2088, 106.8456, true); // Inisialisasi dengan lokasi default
+                // Diubah: Koordinat default juga diubah sesuai target
+                updateLocationDetails(TARGET_LAT, TARGET_LNG, true); 
                 displayAddress.textContent = 'Geolocation tidak didukung browser.';
                 displayTargetDistance.textContent = 'Tidak dapat menghitung jarak.';
                 distanceNotification.style.display = 'block';
-                distanceNotification.innerHTML = `⚠️ **Peringatan:** Browser Anda tidak mendukung Geolocation. Absensi mungkin tidak valid.`;
+                distanceNotification.innerHTML = `Peringatan!! Browser Anda tidak mendukung Geolocation. Absensi mungkin tidak valid.`;
                 absentButton.disabled = true;
             }
         };
