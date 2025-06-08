@@ -55,9 +55,9 @@
         }
 
         #currentDateTime {
-            font-size: 1.5em;
+            font-size: 1.1em; /* Smaller font size */
             margin-bottom: 25px;
-            color: #555;
+            color: #777; /* Grey color */
             font-weight: bold;
             text-align: center;
         }
@@ -202,7 +202,8 @@
         }
         #locationDetails p.current-time-display { 
             font-weight: bold;
-            font-size: 1em; 
+            font-size: 0.9em; /* Smaller font for current time in details */
+            color: #777; /* Grey color for current time in details */
             margin-top: 6px; 
         }
         .coordinate-line { 
@@ -235,7 +236,7 @@
                 font-size: 2.5em; 
             }
             #currentDateTime { 
-                font-size: 1.1em; 
+                font-size: 0.9em; /* Smaller font size for mobile */
             }
             .absent-button {
                 padding: 12px 25px;
@@ -263,7 +264,7 @@
                 margin: 2px 0; 
             }
             #locationDetails p.current-time-display { 
-                font-size: 0.95em; 
+                font-size: 0.85em; /* Smaller font for current time in details mobile */
             }
             .coordinate-text {
                 font-size: 0.95em;
@@ -280,34 +281,104 @@
                 background-size: 140px 55px; 
                 background-position: 0 0; 
             }
+
+            /* Welcome screen styles */
+            #welcomeScreen {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #f4f4f4; /* Match body background */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                text-align: center;
+                box-sizing: border-box;
+                padding: 20px;
+            }
+
+            #welcomeBox {
+                background-color: white;
+                padding: 30px 20px;
+                border-radius: 0; /* No rounded corners */
+                box-shadow: 0 0 15px rgba(0,0,0,0.1);
+                max-width: 90%;
+                width: 350px;
+            }
+
+            #welcomeScreen h2 {
+                font-size: 2em;
+                color: #333;
+                margin-bottom: 10px;
+            }
+
+            #welcomeScreen p {
+                font-size: 1.2em;
+                color: #555;
+                margin-bottom: 15px;
+            }
+
+            #welcomeScreen .store-name {
+                font-size: 2.8em; /* Adjusted for welcome screen */
+                margin-top: 10px;
+                margin-bottom: 20px;
+            }
+
+            #welcomeScreen #welcomeDateTime, #welcomeCountdown {
+                font-size: 1em; /* Smaller font for welcome screen date/time */
+                color: #777; /* Grey color */
+                margin-bottom: 5px;
+                font-weight: normal;
+            }
+            #welcomeCountdown {
+                font-size: 0.9em; /* Even smaller for countdown */
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Absensi Karyawan</h1>
-    <div class="store-name">
-        <span class="latucya-text">Latucya</span> <span class="brilink-text">BRILink</span>
-    </div>
-    
-    <div id="currentDateTime"></div>
-
-    <button id="absentButton" class="absent-button">KLIK UNTUK ABSEN</button>
-    <div id="result" class="info">Tekan tombol di atas untuk mencatat absensi.</div>
-
-    <div id="locationValidationMessage"></div>
-
-    <div id="locationDetails">
-        <h3>Detail Lokasi Saat Ini</h3> 
-        <div class="coordinate-line">
-            <span class="coordinate-text"><strong>Koordinat:</strong> <span id="displayLat">...</span>, <span id="displayLng">...</span></span>
-            <a href="#" id="googleMapsLink" class="map-link" target="_blank">(Lihat di Google Maps)</a>
+    <div id="welcomeScreen">
+        <div id="welcomeBox">
+            <h2>Selamat Datang!</h2>
+            <p>Di Aplikasi Absensi Karyawan</p>
+            <div class="store-name">
+                <span class="latucya-text">Latucya</span> <span class="brilink-text">BRILink</span>
+            </div>
+            <div id="welcomeDateTime"></div>
+            <div id="welcomeCountdown"></div>
         </div>
-        <p><strong>Lokasi Saat Ini:</strong> <span id="displayAddress">Mencari lokasi...</span></p>
-        <p class="current-time-display"><strong>Waktu Saat Ini:</strong> <span id="displayCurrentTime">...</span></p>
     </div>
 
-    <div class="footer-text">
-        Dikembangkan oleh Muhammad Jodi Marties Seviadi
+    <div id="mainContent" style="display: none;">
+        <h1>Absensi Karyawan</h1>
+        <div class="store-name">
+            <span class="latucya-text">Latucya</span> <span class="brilink-text">BRILink</span>
+        </div>
+        
+        <div id="currentDateTime"></div>
+
+        <button id="absentButton" class="absent-button">KLIK UNTUK ABSEN</button>
+        <div id="result" class="info">Tekan tombol di atas untuk mencatat absensi.</div>
+
+        <div id="locationValidationMessage"></div>
+
+        <div id="locationDetails">
+            <h3>Detail Lokasi Saat Ini</h3> 
+            <div class="coordinate-line">
+                <span class="coordinate-text"><strong>Koordinat:</strong> <span id="displayLat">...</span>, <span id="displayLng">...</span></span>
+                <a href="#" id="googleMapsLink" class="map-link" target="_blank">(Lihat di Google Maps)</a>
+            </div>
+            <p><strong>Lokasi Saat Ini:</strong> <span id="displayAddress">Mencari lokasi...</span></p>
+            <p class="current-time-display"><strong>Waktu Saat Ini:</strong> <span id="displayCurrentTime">...</span></p>
+        </div>
+
+        <div class="footer-text">
+            Dikembangkan oleh Muhammad Jodi Marties Seviadi
+        </div>
     </div>
 
     <script>
@@ -319,6 +390,10 @@
         const displayCurrentTime = document.getElementById('displayCurrentTime');
         const locationValidationMessage = document.getElementById('locationValidationMessage'); 
         const googleMapsLink = document.getElementById('googleMapsLink'); 
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const welcomeDateTime = document.getElementById('welcomeDateTime');
+        const welcomeCountdown = document.getElementById('welcomeCountdown');
+        const mainContent = document.getElementById('mainContent');
 
         // Koordinat lokasi target absensi (titik yang diberikan)
         const TARGET_LAT = -6.53336932533567; 
@@ -460,10 +535,6 @@
                             absentButton.disabled = true; 
                             document.getElementById('locationDetails').style.display = 'block';
                             updateLocationDetails(latitude, longitude); 
-                            setTimeout(() => {
-                                resultElement.innerHTML = `Tekan tombol di atas untuk mencatat absensi. Anda terlalu jauh (${distanceText}).`;
-                                resultElement.className = 'info'; // Kembali ke warna info
-                            }, 5000); 
                             return; 
                         }
 
@@ -493,12 +564,8 @@
                                 break;
                         }
                         resultElement.innerHTML = `Absensi gagal: ${errorMessage} Silakan refresh halaman dan coba lagi.`;
-                        setTimeout(() => {
-                            resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
-                            resultElement.className = 'info'; // Kembali ke warna info
-                            absentButton.disabled = false; 
-                            document.getElementById('locationDetails').style.display = 'block';
-                        }, 5000); 
+                        absentButton.disabled = false; 
+                        document.getElementById('locationDetails').style.display = 'block';
                         console.error('Error saat mendapatkan lokasi:', error);
                     },
                     {
@@ -510,12 +577,8 @@
             } else {
                 resultElement.className = 'warning-yellow'; /* Kuning untuk browser tidak mendukung Geolocation */
                 resultElement.innerHTML = `Absensi gagal: Browser Anda tidak mendukung Geolocation.`;
-                setTimeout(() => {
-                    resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
-                    resultElement.className = 'info'; // Kembali ke warna info
-                    absentButton.disabled = false; 
-                    document.getElementById('locationDetails').style.display = 'block';
-                }, 4000);
+                absentButton.disabled = false; 
+                document.getElementById('locationDetails').style.display = 'block';
             }
         }
 
@@ -549,31 +612,18 @@
                 } else if (data.status === "already_absent") {
                     resultElement.className = 'error'; /* Diatur merah untuk "sudah absen" (ini adalah kondisi gagal) */
                     resultElement.innerHTML = `Absensi gagal: ${data.message}`; 
-                    setTimeout(() => {
-                        resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
-                        resultElement.className = 'info'; // Kembali ke warna info
-                        absentButton.disabled = false; 
-                    }, 4000); 
+                    absentButton.disabled = false; 
                 } else {
                     resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah pada error server/tidak dikenal */
                     resultElement.innerHTML = `Terjadi kesalahan saat memproses absensi: ${data.message || 'Respons tidak dikenal'}.`;
-                    setTimeout(() => {
-                        resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
-                        resultElement.className = 'info'; // Kembali ke warna info
-                        absentButton.disabled = false; 
-                    }, 4000);
+                    absentButton.disabled = false; 
                 }
             })
             .catch(error => {
                 console.error('Error saat mengirim absensi atau memproses respons:', error);
                 resultElement.className = 'error'; /* Set kelas ke 'error' untuk warna merah pada kesalahan jaringan/server */
                 resultElement.innerHTML = `Terjadi kesalahan jaringan atau server. Silakan coba lagi.`;
-                
-                setTimeout(() => {
-                    resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
-                    resultElement.className = 'info'; // Kembali ke warna info
-                    absentButton.disabled = false; 
-                }, 3000);
+                absentButton.disabled = false; 
             });
         }
 
@@ -587,15 +637,30 @@
             const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
 
             document.getElementById('currentDateTime').innerHTML = `${dateString} | ${timeString}`;
+            welcomeDateTime.innerHTML = `${dateString} | ${timeString}`; // Update welcome screen date/time
         }
 
-        window.onload = function() {
+        // Countdown for welcome screen
+        let countdown = 5;
+        function updateCountdown() {
+            welcomeCountdown.textContent = `Masuk ke halaman utama dalam ${countdown} detik...`;
+            if (countdown <= 0) {
+                welcomeScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                initializeMainContent();
+            } else {
+                countdown--;
+                setTimeout(updateCountdown, 1000);
+            }
+        }
+
+        function initializeMainContent() {
             updateDateTime();
             setInterval(updateDateTime, 1000);
             setInterval(updateDisplayTime, 1000); 
             absentButton.disabled = false;
             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
-            resultElement.className = 'info'; // Notifikasi awal tetap biru (info)
+            resultElement.className = 'info';
 
             googleMapsLink.style.display = 'none';
 
@@ -614,7 +679,6 @@
                         absentButton.disabled = true;
                         googleMapsLink.style.display = 'none'; 
 
-                        // Menampilkan notifikasi kuning ketika lokasi tidak aktif di awal
                         resultElement.className = 'warning-yellow'; 
                         let errorMessage = "Gagal mendapatkan lokasi saat memuat halaman. ";
                         switch(error.code) {
@@ -632,10 +696,6 @@
                                 break;
                         }
                         resultElement.innerHTML = `Penting: ${errorMessage}`;
-                        setTimeout(() => {
-                            resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
-                            resultElement.className = 'info'; 
-                        }, 5000); 
                     },
                     {
                         enableHighAccuracy: true, 
@@ -652,16 +712,15 @@
                 absentButton.disabled = true;
                 googleMapsLink.style.display = 'none'; 
 
-                // Menampilkan notifikasi kuning ketika browser tidak mendukung Geolocation di awal
                 resultElement.className = 'warning-yellow';
                 resultElement.innerHTML = `Penting: Browser Anda tidak mendukung Geolocation. Absensi tidak dapat dilakukan.`;
-                setTimeout(() => {
-                    resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
-                    resultElement.className = 'info'; 
-                }, 4000);
             }
+        }
+
+        window.onload = function() {
+            updateDateTime(); // Set initial time for welcome screen
+            updateCountdown(); // Start the countdown
         };
     </script>
 </body>
 </html>
-
