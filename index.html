@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi Karyawan</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIINfQPDQwrLpfenyFwEKoJpkPKVchvk/vU="
-        crossorigin=""/>
     <style>
         body {
             font-family: sans-serif;
@@ -139,14 +136,43 @@
             text-align: center;
         }
 
-        /* Style untuk peta */
-        #map {
-            height: 300px; /* Tinggi peta default */
-            width: 80%; /* Lebar peta default */
+        /* Hapus style untuk peta karena tidak ada lagi */
+        /* #map {
+            height: 300px; 
+            width: 80%; 
             margin-top: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            max-width: 500px; /* Batasi lebar maksimal untuk tampilan desktop */
+            max-width: 500px; 
+        } */
+
+        /* Style untuk detail lokasi */
+        #locationDetails {
+            margin-top: 15px; /* Sesuaikan margin jika peta dihapus */
+            font-size: 1em;
+            color: #333;
+            text-align: left; /* Teks rata kiri untuk daftar */
+            width: 80%;
+            max-width: 500px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #locationDetails p {
+            margin: 5px 0;
+            line-height: 1.4;
+            font-size: 0.95em; /* Sedikit lebih kecil agar lebih ringkas */
+            color: #555;
+        }
+        #locationDetails p strong {
+            color: #007bff; /* Warna biru untuk label */
+        }
+        #locationDetails p.current-time-display {
+            font-weight: bold;
+            color: #004a99; /* Warna biru BRI */
+            font-size: 1.1em;
+            margin-top: 10px;
         }
         
         @media (max-width: 600px) {
@@ -169,10 +195,22 @@
             .already-absent { font-size: 1em !important; max-width: 95%; }
             .footer-text { font-size: 0.7em; }
             
-            /* Penyesuaian ukuran peta untuk mobile */
-            #map {
-                width: 95%; /* Lebar peta di mobile, lebih luas */
-                height: 250px; /* Tinggi peta di mobile, sedikit lebih kecil */
+            /* Hapus penyesuaian ukuran peta untuk mobile */
+            /* #map {
+                width: 95%; 
+                height: 250px; 
+            } */
+
+            /* Penyesuaian detail lokasi untuk mobile */
+            #locationDetails {
+                width: 95%;
+                padding: 12px;
+            }
+            #locationDetails p {
+                font-size: 0.85em; /* Lebih kecil lagi di mobile */
+            }
+            #locationDetails p.current-time-display {
+                font-size: 1em;
             }
 
             /* Watermark di HP */
@@ -197,50 +235,76 @@
     <button id="absentButton" class="absent-button">KLIK UNTUK ABSEN</button>
     <div id="result" class="info">Tekan tombol di atas untuk mencatat absensi.</div>
 
-    <div id="map"></div>
+    <div id="locationDetails">
+        <p><strong>Koordinat:</strong> <span id="displayLat">...</span>, <span id="displayLng">...</span></p>
+        <p><strong>Alamat:</strong> <span id="displayAddress">Mencari alamat...</span></p>
+        <p class="current-time-display"><strong>Waktu Saat Ini:</strong> <span id="displayCurrentTime">...</span></p>
+    </div>
 
     <div class="footer-text">
         Dikembangkan oleh Muhammad Jodi Marties Seviadi
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nEF3zZ/c+p7qLgN7pZl5/n6b6+J+M7nL/d5+Z6w="
-        crossorigin=""></script>
     <script>
         const absentButton = document.getElementById('absentButton');
         const resultElement = document.getElementById('result');
-        let currentMap = null; // Variabel global untuk menyimpan instance peta
-        let currentMarker = null; // Variabel global untuk menyimpan instance marker
+        const displayLat = document.getElementById('displayLat');
+        const displayLng = document.getElementById('displayLng');
+        const displayAddress = document.getElementById('displayAddress');
+        const displayCurrentTime = document.getElementById('displayCurrentTime');
 
-        // Fungsi untuk menginisialisasi atau memperbarui peta Leaflet
-        function initLeafletMap(latitude, longitude) {
-            const mapId = 'map';
-            const zoomLevel = 17; // Tingkat zoom yang lebih dekat
+        // Hapus variabel global untuk peta dan marker
+        // let currentMap = null; 
+        // let currentMarker = null; 
 
-            if (currentMap) {
-                // Jika peta sudah ada, update view dan marker
-                currentMap.setView([latitude, longitude], zoomLevel);
-                if (currentMarker) {
-                    currentMarker.setLatLng([latitude, longitude]);
-                } else {
-                    currentMarker = L.marker([latitude, longitude]).addTo(currentMap)
-                        .bindPopup('Lokasi Anda Saat Ini')
-                        .openPopup();
-                }
-            } else {
-                // Jika peta belum ada, buat yang baru
-                currentMap = L.map(mapId).setView([latitude, longitude], zoomLevel);
+        // Fungsi untuk memperbarui tampilan waktu di detail lokasi
+        function updateDisplayTime() {
+            const now = new Date();
+            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const timeString = now.toLocaleTimeString('id-ID', optionsTime) + ' WIB'; 
+            displayCurrentTime.textContent = timeString;
+        }
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(currentMap);
+        // Fungsi untuk melakukan reverse geocoding menggunakan Nominatim
+        async function getAddressFromCoordinates(lat, lng) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                let addressParts = [];
+                const address = data.address;
 
-                currentMarker = L.marker([latitude, longitude]).addTo(currentMap)
-                    .bindPopup('Lokasi Anda Saat Ini')
-                    .openPopup();
+                // Urutan prioritas dari Nominatim, sesuaikan jika ada kebutuhan lain
+                if (address.road) addressParts.push(address.road);
+                if (address.suburb) addressParts.push(address.suburb); // Untuk kelurahan/dusun jika ada
+                if (address.village) addressParts.push(address.village); // Desa
+                else if (address.town) addressParts.push(address.town); // Kota kecil
+                else if (address.city) addressParts.push(address.city); // Kota besar
+                
+                if (address.county) addressParts.push(address.county); // Kabupaten/Kota Administrasi
+                if (address.state) addressParts.push(address.state); // Provinsi
+                if (address.country) addressParts.push(address.country);
+
+                // Jika tidak ada detail spesifik, gunakan display_name lengkap
+                return addressParts.length > 0 ? addressParts.join(', ') : data.display_name;
+
+            } catch (error) {
+                console.error('Error fetching address:', error);
+                return 'Tidak dapat menemukan alamat.';
             }
-            // Penting: Invalidate size agar peta render dengan benar
-            currentMap.invalidateSize(); 
+        }
+
+        // Fungsi untuk menampilkan detail lokasi tanpa peta
+        async function updateLocationDetails(latitude, longitude) {
+            // Tampilkan koordinat
+            displayLat.textContent = latitude.toFixed(6); // Batasi 6 desimal
+            displayLng.textContent = longitude.toFixed(6); // Batasi 6 desimal
+            displayAddress.textContent = 'Mencari alamat...'; // Reset saat mencari alamat baru
+
+            // Dapatkan alamat dan tampilkan
+            const address = await getAddressFromCoordinates(latitude, longitude);
+            displayAddress.textContent = address;
         }
 
         // Fungsi untuk mendapatkan lokasi dan kemudian mencatat absensi
@@ -248,6 +312,9 @@
             absentButton.disabled = true; 
             resultElement.className = 'processing-success';
             resultElement.innerHTML = `Memproses absensi dan mendapatkan lokasi...`;
+            
+            // Sembunyikan detail lokasi sebentar saat memproses
+            document.getElementById('locationDetails').style.display = 'none';
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -255,8 +322,9 @@
                         const latitude = position.coords.latitude;
                         const longitude = position.coords.longitude;
                         
-                        // Inisialisasi atau update peta dengan lokasi yang didapat
-                        initLeafletMap(latitude, longitude);
+                        // Perbarui detail lokasi tanpa peta
+                        updateLocationDetails(latitude, longitude);
+                        document.getElementById('locationDetails').style.display = 'block'; // Tampilkan lagi
 
                         // Panggil fungsi absensi setelah mendapatkan lokasi
                         kirimAbsensi(latitude, longitude);
@@ -283,6 +351,7 @@
                             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                             resultElement.className = 'info';
                             absentButton.disabled = false; 
+                            document.getElementById('locationDetails').style.display = 'block'; // Tampilkan lagi
                         }, 5000); 
                         console.error('Error saat mendapatkan lokasi:', error);
                     },
@@ -299,6 +368,7 @@
                     resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
                     resultElement.className = 'info';
                     absentButton.disabled = false; 
+                    document.getElementById('locationDetails').style.display = 'block'; // Tampilkan lagi
                 }, 4000);
             }
         }
@@ -374,37 +444,40 @@
 
         window.onload = function() {
             updateDateTime();
-            setInterval(updateDateTime, 1000);
+            setInterval(updateDateTime, 1000); // Update waktu di header
+            setInterval(updateDisplayTime, 1000); // Update waktu di detail lokasi
             absentButton.disabled = false;
             resultElement.innerHTML = 'Tekan tombol di atas untuk mencatat absensi.';
             resultElement.className = 'info';
 
-            // Inisialisasi peta dengan lokasi default jika tidak ada lokasi yang ditemukan
+            // Inisialisasi detail lokasi dengan lokasi default jika tidak ada lokasi yang ditemukan
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        initLeafletMap(position.coords.latitude, position.coords.longitude);
+                        updateLocationDetails(position.coords.latitude, position.coords.longitude);
                     },
                     (error) => {
-                        // Jika tidak mendapatkan lokasi, inisialisasi peta di lokasi default (contoh: Jakarta)
                         console.warn("Gagal mendapatkan lokasi saat memuat halaman:", error);
-                        initLeafletMap(-6.2088, 106.8456); // Koordinat default Jakarta
+                        // Jika tidak mendapatkan lokasi, inisialisasi detail lokasi di lokasi default (contoh: Jakarta)
+                        updateLocationDetails(-6.2088, 106.8456); // Koordinat default Jakarta
+                        displayAddress.textContent = 'Tidak dapat mendeteksi lokasi saat ini.';
                     },
                     {
                         enableHighAccuracy: false, // Kurangi akurasi untuk load awal
                         timeout: 5000,
-                        maximumAge: 60000 // Bisa menggunakan cache untuk load awal
+                        maximumAge: 0             // Selalu coba dapatkan lokasi terbaru untuk load awal
                     }
                 );
             } else {
-                initLeafletMap(-6.2088, 106.8456); // Koordinat default Jakarta
+                updateLocationDetails(-6.2088, 106.8456); // Koordinat default Jakarta
+                displayAddress.textContent = 'Geolocation tidak didukung browser.';
             }
-            // Tambahkan event listener untuk meresize peta saat window di-resize
-            window.addEventListener('resize', () => {
-                if (currentMap) {
-                    currentMap.invalidateSize();
-                }
-            });
+            // Hapus event listener untuk meresize peta karena tidak ada peta lagi
+            // window.addEventListener('resize', () => {
+            //     if (currentMap) {
+            //         currentMap.invalidateSize();
+            //     }
+            // });
         };
     </script>
 </body>
