@@ -21,12 +21,9 @@
 
             /* Watermark Style START */
             background-repeat: repeat;
-            /* Definisi SVG watermark biru */
             --watermark-blue: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='70px' width='180px'><text x='0' y='45' fill='rgba(0, 123, 255, 0.05)' font-family='sans-serif' font-size='22' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
-            /* Definisi SVG watermark orange */
             --watermark-orange: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='70px' width='180px'><text x='0' y='45' fill='rgba(255, 165, 0, 0.05)' font-family='sans-serif' font-size='22' transform='rotate(-15 40 40)'>Latucya BRILink</text></svg>");
             
-            /* Gunakan kedua SVG dengan background-image */
             background-image: var(--watermark-blue), var(--watermark-orange);
             background-size: 170px 65px; 
             background-position: 0 0, 85px 32.5px; 
@@ -45,14 +42,21 @@
             margin-bottom: 25px;
             text-align: center;
             font-weight: bold;
+            /* Hapus gradasi teks di sini karena akan diatur per kata */
+            background: none; 
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            -webkit-text-fill-color: unset;
+            color: unset;
         }
-        /* Style untuk gradasi teks - Diubah ke warna Gemini */
-        .gradient-text {
-            background: linear-gradient(to right, #4285F4, #9B27B0); /* Biru ke Ungu/Magenta */
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: transparent;
+        /* Style baru untuk bagian "Latucya" */
+        .store-name .latucya-text {
+            color: #004a99; /* Warna biru BRI */
+        }
+        /* Style baru untuk bagian "BRILink" */
+        .store-name .brilink-text {
+            color: #ff6600; /* Warna orange yang lebih gelap */
+            /* Anda bisa mengatur warna oranye sesuai preferensi, misal: #FF8C00 (dark orange), #FFA500 (orange) */
         }
 
         #currentDateTime {
@@ -169,8 +173,8 @@
 </head>
 <body>
     <h1>Absensi Karyawan</h1>
-    <div class="store-name gradient-text">
-        Latucya BRILink
+    <div class="store-name">
+        <span class="latucya-text">Latucya</span> <span class="brilink-text">BRILink</span>
     </div>
     
     <div id="currentDateTime"></div>
