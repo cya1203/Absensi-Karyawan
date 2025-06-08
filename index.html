@@ -504,8 +504,8 @@
             displayLat.textContent = toDegreesMinutesAndSeconds(latitude, 'lat');
             displayLng.textContent = toDegreesMinutesAndSeconds(longitude, 'lng');
             
-            // Update tautan Google Maps
-            googleMapsLink.href = `http://maps.google.com/?q=${latitude},${longitude}`; // Perbaikan URL Google Maps
+            // Update tautan Google Maps - INI ADALAH PERBAIKANNYA
+            googleMapsLink.href = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
             googleMapsLink.style.display = 'inline'; 
 
             displayAddress.textContent = 'Mencari lokasi...';
